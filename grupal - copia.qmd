@@ -1,0 +1,218 @@
+---
+title: "Entrega grupal"
+author: "Eli, Jazmín, Flor, Shengnan, Mariajo"
+format:
+  revealjs:
+    theme: [style.scss]
+    embed-resources: true
+execute: 
+  echo: true
+---
+
+## Paquetes necesarios
+
+> Insertad aquí todos los paquetes vayáis necesitando
+
+```{r}
+rm(list = ls())
+library(tidyverse)
+library(glue)
+library(forcats)
+library(lubridate)
+
+
+```
+
+---
+
+
+## Entrega grupal
+
+### Datos
+
+La práctica se basará en los [**archivos de datos electorales**]{.hl-yellow} que se indican a continuación, recopilando datos sobre las elecciones al Congreso de los Diputados en España desde 2008 hasta la actualidad, así como encuestas, códigos de municipios y abreviaturas
+
+```{r}
+# NO TOQUES NADA
+election_data <- read_csv(file = "./data/datos_elecciones_brutos.csv")
+cod_mun <- read_csv(file = "./data/cod_mun.csv")
+surveys <- read_csv(file = "./data/historical_surveys.csv")
+abbrev <- read_csv(file = "./data/siglas.csv")
+```
+
+
+---
+
+## Datos
+
+-   `election_data`: archivo con las elecciones al congreso
+-   `cod_mun`: archivo con los códigos y nombres de cada municipio
+-   `abbrev`: siglas de cada partido
+-   `surveys`: encuestas electorales desde 1982.
+
+---
+
+## Datos
+
+-   `surveys`: encuestas electorales desde 1982.
+    -   `type_survey`: tipo de encuesta (nacional, regional...)
+    -   `date_elec`: fecha de las futuras elecciones
+    -   `id_pollster`, `pollster`, `media`: id y nombre de la empresa encuestadora, así como medio que la encargó
+    -   `field_date_from`, `field_date_to`: fechas de inicio y fin del trabajo de la encuesta
+    -   `exit_poll`: ¿es una encuesta a pie de urna?
+    -   `size`: tamaño muestral de la encuesta
+    -   `turnout`: participación (estimación)
+
+---
+
+## Objetivos
+
+
+El objetivo de la entrega es [**realizar un análisis de los datos electorales**]{.hl-green}, llevando a cabo la depuración, los resúmenes y los gráficos que consideres necesarios, tanto de los resultados como de la precisión de las encuestas electorales.
+
+En concreto, debes trabajar únicamente en el **período de tiempo que incluye las elecciones desde 2008 hasta las últimas elecciones de 2019**
+
+---
+
+## Ítems obligatorios
+
+1. Los datos deben ser convertidos a tidydata donde sea apropiado.
+
+2. Debes incluir al menos un join entre tablas.
+
+3. Los paquetes `{glue}`, `{forcats}` y `{lubridate}` deben ser utilizados en algún punto
+
+4. Los siguientes elementos deben usarse al menos una vez: mutate, summarise, group_by (o su equivalente), case_when
+
+5. Deberéis definir al menos una función (con más de 5 líneas de código)
+    
+---
+
+## Ítems obligatorios
+
+6. Contamos con muchos partidos que se presentan a las elecciones. Solo nos interesarán los siguientes partidos (cuidado: algunos tienen o tenían federaciones - sucursales - con otros nombres):
+
+- PARTIDO SOCIALISTA OBRERO ESPAÑOL
+- PARTIDO POPULAR
+- CIUDADANOS
+- PARTIDO NACIONALISTA VASCO
+- BLOQUE NACIONALISTA GALLEGO
+- UNIDAS PODEMOS - IU (Unidas Podemos, Unidos Podemos, Podemos, IU, Podem, y Ezker Batua).
+- ESQUERRA REPUBLICANA DE CATALUNYA
+- EH - BILDU (ahora son una coalición de partidos formada por lo que antes era Sortu, Eusko Alkartasuna, Aralar, Alternatiba).
+- VOX
+
+---
+
+## Ítems obligatorios
+
+7. Todo lo que no esté en alguno de los anteriores partidos debe ser correctamente reagrupado (y resumido) en `OTROS`
+
+8.   Las siglas deben ser usadas en las visualizaciones (ideas en <https://r-graph-gallery.com/>).
+
+9. Debes usar todos los archivos en algún momento.
+
+10.  Debes descartar las encuestas que:
+
+    -   se refieran a elecciones anteriores a 2008
+    -   sean a pie de urna
+    -   tamaño muestral desconocido o inferior a 500.
+    -   tenga 1 día o menos de trabajo de campo.
+
+
+---
+
+## 
+
+```{r}
+names(election_data)
+
+#Convertir a tidy data
+eleccion_tidy <- election_data |> pivot_longer(cols = c(16:471), names_to = "partido", values_to = "votos", values_drop_na = TRUE)
+
+eleccion_tidy |> distinct(anno) #Elecciones 2008,2011,2015,2016,2019
+
+#Depuración nombres de partidos
+
+nombres_partidos <- c("PARTIDO SOCIALISTA OBRERO ESPAÑOL","PARTIDO POPULAR", "CIUDADANOS", "PARTIDO NACIONALISTA VASCO", "BLOQUE NACIONALISTA GALLEGO", "UNIDAS PODEMOS - IU", "ESQUERRA REPUBLICANA DE CATALUNYA",  "EH - BILDU", "VOX")
+
+cambia_nombres <- function(partido, nombres) {
+  partido_min <- str_to_lower(partido)
+  nombres_min <- str_to_lower(nombres)
+  if (partido_min %in% c("sortu", "eusko alkartasuna", "aralar", "alternatiba")) {
+    return("EH - BILDU")
+  }
+  if (partido_min %in% c("unidas podemos", "unidos podemos", "podemos", "iu", "podem", "ezker batua")) {
+    return("UNIDAS PODEMOS - IU")
+  }
+  if (str_detect(partido_min,"vasc")) {
+    return("PARTIDO NACIONALISTA VASCO")
+  }
+  if (str_detect(partido_min,c("psoe|partido socialista obrero español"))) {
+    return("PARTIDO SOCIALISTA OBRERO ESPAÑOL")
+  }
+    if (str_detect(partido_min,c("pp|partido popular"))) {
+    return("PARTIDO POPULAR")
+  }
+  if (any(partido_min == nombres_min)) {
+    return(partido)  
+  }
+  return("OTRO")
+}
+
+cambia_nombres("PARTIT POPULAR-PARTIDO POPULAR", nombres_partidos) #ejemplo
+
+nombres <- election_data |> select (16:471) |> names()
+
+#PROBLEMAS CON ESTOS PARTIDOS: 
+  # CIUDADANOS
+election_data |> select (contains("CIUDADA")) |> names() #Son el mismo partido?
+
+  # BLOQUE NACIONALISTA GALLEGO. 
+election_data |> select (contains("gal")) |> names() #Son todos el mismo partido?? 
+
+
+#Aplicar función al dataframe
+eleccion_tidy <- eleccion_tidy |> rowwise() |> mutate(partido_n = cambia_nombres(partido, nombres_partidos))
+
+#Reagrupar partido "otro"
+
+eleccion_tidy <- eleccion_tidy |> 
+  select(-partido) |> 
+  group_by(partido_n,tipo_eleccion,anno,mes,vuelta,codigo_ccaa,codigo_provincia,codigo_municipio,codigo_distrito_electoral) |> 
+  summarise(across(c(numero_mesas:votos),sum)) |> 
+  ungroup()
+
+
+
+```
+
+
+
+## Encuestas
+
+Debes descartar las encuestas que:
+
+    -   se refieran a elecciones anteriores a 2008
+    -   sean a pie de urna
+    -   tamaño muestral desconocido o inferior a 500.
+    -   tenga 1 día o menos de trabajo de campo.
+
+
+
+```{r}
+
+head(surveys)
+names(surveys)
+
+surveys_tidy <- surveys |> pivot_longer(cols = c(11:59), names_to = "partidos", values_to = "intencion_voto", values_drop_na = TRUE)
+
+surveys_tidy <- surveys_tidy |> drop_na(size) |>  filter(size >=500)   #tamaño muestral
+
+surveys_tidy <- surveys_tidy |> filter(date_elec >= "2008-01-01")   #elecciones desde 2008
+
+
+
+```
+
+
