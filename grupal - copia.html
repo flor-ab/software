@@ -1229,7 +1229,8 @@ Eli, Jazmín, Flor, Shengnan, Mariajo
 <span id="cb1-2"><a href></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href></a><span class="fu">library</span>(glue)</span>
 <span id="cb1-4"><a href></a><span class="fu">library</span>(forcats)</span>
-<span id="cb1-5"><a href></a><span class="fu">library</span>(lubridate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a href></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb1-6"><a href></a><span class="fu">library</span>(waffle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="entrega-grupal" class="slide level2">
@@ -1313,590 +1314,79 @@ Eli, Jazmín, Flor, Shengnan, Mariajo
 -   tamaño muestral desconocido o inferior a 500.
 -   tenga 1 día o menos de trabajo de campo.</code></pre>
 </section>
-<section id="section" class="slide level2">
-<h2></h2>
+<section id="depuración-de-datos" class="slide level2">
+<h2>Depuración de datos</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href></a><span class="fu">names</span>(election_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>  [1] &quot;tipo_eleccion&quot;                                                                         
-  [2] &quot;anno&quot;                                                                                  
-  [3] &quot;mes&quot;                                                                                   
-  [4] &quot;vuelta&quot;                                                                                
-  [5] &quot;codigo_ccaa&quot;                                                                           
-  [6] &quot;codigo_provincia&quot;                                                                      
-  [7] &quot;codigo_municipio&quot;                                                                      
-  [8] &quot;codigo_distrito_electoral&quot;                                                             
-  [9] &quot;numero_mesas&quot;                                                                          
- [10] &quot;censo&quot;                                                                                 
- [11] &quot;participacion_1&quot;                                                                       
- [12] &quot;participacion_2&quot;                                                                       
- [13] &quot;votos_blancos&quot;                                                                         
- [14] &quot;votos_nulos&quot;                                                                           
- [15] &quot;votos_candidaturas&quot;                                                                    
- [16] &quot;BERDEAK-LOS VERDES&quot;                                                                    
- [17] &quot;ARALAR&quot;                                                                                
- [18] &quot;PARTIDO OBRERO SOCIALISTA INTERNACIONALISTA&quot;                                           
- [19] &quot;ALTERNATIVA MOTOR Y DEPORTES&quot;                                                          
- [20] &quot;PARTIDO HUMANISTA&quot;                                                                     
- [21] &quot;PARTIDO POPULAR&quot;                                                                       
- [22] &quot;EZKER BATUA-BERDEAK-ALTERNATIVA&quot;                                                       
- [23] &quot;EUSKO ALKARTASUNA&quot;                                                                     
- [24] &quot;PARTIDO ANTITAURINO CONTRA EL MALTRATO ANIMAL&quot;                                         
- [25] &quot;UNION PROGRESO Y DEMOCRACIA&quot;                                                           
- [26] &quot;PARTIDO SOCIALISTA DE EUSKADI-EUSKADIKO EZKERRA&quot;                                       
- [27] &quot;POR UN MUNDO MAS JUSTO&quot;                                                                
- [28] &quot;EUZKO ALDERDI JELTZALEA-PARTIDO NACIONALISTA VASCO&quot;                                    
- [29] &quot;CIUDADANOS-PARTIDO DE LA CIUDADANIA&quot;                                                   
- [30] &quot;PARTIDO CARLISTA DE EUSKALHERRIA-EUSKALHERRIKO KARLISTA ALDERDIA&quot;                      
- [31] &quot;PARTIDO COMUNISTA DE LOS PUEBLOS DE ESPAÑA&quot;                                            
- [32] &quot;DEMOCRACIA NACIONAL&quot;                                                                   
- [33] &quot;ALIANZA NACIONAL&quot;                                                                      
- [34] &quot;FALANGE ESPAÑOLA DE LAS JONS&quot;                                                          
- [35] &quot;ALTERNATIVA ESPAÑOLA&quot;                                                                  
- [36] &quot;IZQUIERDA UNIDA-ALTERNATIVA&quot;                                                           
- [37] &quot;PARTIDO SOCIAL DEMOCRATA&quot;                                                              
- [38] &quot;PARTIDO FAMILIA Y VIDA&quot;                                                                
- [39] &quot;PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;                                                     
- [40] &quot;CIUDADANOS EN BLANCO&quot;                                                                  
- [41] &quot;ESPAÑA 2000&quot;                                                                           
- [42] &quot;TIERRA COMUNERA&quot;                                                                       
- [43] &quot;FALANGE AUTENTICA&quot;                                                                     
- [44] &quot;FALANGE ESPAÑOLA DE LA JONS&quot;                                                           
- [45] &quot;ESQUERRA UNIDA DEL PAIS VALENCIA-IZQUIERDA REPUBLICANA: ESQUERRA UNIDA I REPUBLICANA&quot;  
- [46] &quot;BLOC-INICIATIVA-VERDS&quot;                                                                 
- [47] &quot;CENTRO DEMOCRATICO LIBERAL&quot;                                                            
- [48] &quot;REPRESENTACION CANNABICA NAVARRA&quot;                                                      
- [49] &quot;PARTIT ANTITAURI CONTRA EL MALTRACTAMENT ANIMAL&quot;                                       
- [50] &quot;LOS VERDES-GRUPO VERDE&quot;                                                                
- [51] &quot;LOS VERDES-ELS VERDS&quot;                                                                  
- [52] &quot;ESQUERRA REPUBLICANA DEL PAIS VALENCIA-PAIS VALENCIA SI&quot;                               
- [53] &quot;FAMILIA Y VIDA&quot;                                                                        
- [54] &quot;CIUDADANOS PARTIDO DE LA CIUDADANIA&quot;                                                   
- [55] &quot;COALICIO VALENCIANA&quot;                                                                   
- [56] &quot;PARTIDO CENTRISTAS&quot;                                                                    
- [57] &quot;OPCIO NACIONALISTA VALENCIANA&quot;                                                         
- [58] &quot;PER LA REPUBLICA VALENCIANA&quot;                                                           
- [59] &quot;COALICION ANDALUCISTA&quot;                                                                 
- [60] &quot;PARTIDO DE ALMERIA&quot;                                                                    
- [61] &quot;IZQUIERDA UNIDA LOS VERDES-CONVOCATORIA POR ANDALUCIA - ALTERNATIVA&quot;                   
- [62] &quot;LOS VERDES&quot;                                                                            
- [63] &quot;CENTRO DEMOCRATICO Y SOCIAL&quot;                                                           
- [64] &quot;PARTIDO COMUNISTA DEL PUEBLO CASTELLANO&quot;                                               
- [65] &quot;LOS VERDES DE EUROPA&quot;                                                                  
- [66] &quot;FALANGE ESPAÑOLA DE LAS J.O.N.S.&quot;                                                      
- [67] &quot;CENTRO DEMOCRATICO ESPAÑOL&quot;                                                            
- [68] &quot;FRENTE ESPAÑOL&quot;                                                                        
- [69] &quot;COMUNION TRADICIONALISTA CARLISTA&quot;                                                     
- [70] &quot;EXTREMADURA UNIDA&quot;                                                                     
- [71] &quot;ESPAÑA-2000&quot;                                                                           
- [72] &quot;ESQUERRA UNIDA - ELS VERDS&quot;                                                            
- [73] &quot;UNITAT PER LES ILLES&quot;                                                                  
- [74] &quot;COALICIO TREBALLADORS PER LA DEMOCRACIA&quot;                                               
- [75] &quot;PARTIT ILLENC DE SES ILLES BALEARS&quot;                                                    
- [76] &quot;ALIANÇA BALEAR&quot;                                                                        
- [77] &quot;PARTIT PER CATALUNYA&quot;                                                                  
- [78] &quot;PARTIT OBRER SOCIALISTA INTERNACIONALISTA&quot;                                             
- [79] &quot;CONVERGENCIA I UNIO&quot;                                                                   
- [80] &quot;PARTIDO DE LAS LIBERTADES CIVILES&quot;                                                     
- [81] &quot;PARTIT POPULAR/PARTIDO POPULAR&quot;                                                        
- [82] &quot;PARTIDO DE LOS PENSIONISTAS EN ACCION&quot;                                                 
- [83] &quot;PARTIT FAMILIA I VIDA&quot;                                                                 
- [84] &quot;PARTIT DELS SOCIALISTES DE CATALUNYA&quot;                                                  
- [85] &quot;LLUITA INTERNACIONALISTA&quot;                                                              
- [86] &quot;PARTIT CARLI DE CATALUNYA&quot;                                                             
- [87] &quot;ESQUERRA REPUBLICANA DE CATALUNYA&quot;                                                     
- [88] &quot;PARTIDO COMUNISTA DEL PUEBLO DE CATALUNYA&quot;                                             
- [89] &quot;ELS VERDS-LOS VERDES&quot;                                                                  
- [90] &quot;PARTIT REPUBLICA CATALA&quot;                                                               
- [91] &quot;INICIATIVA PER CATALUNYA VERDS-ESQUERRA UNIDA I ALTERNATIVA&quot;                           
- [92] &quot;ELS VERDS - L&#39;ALTERNATIVA ECOLOGISTA&quot;                                                  
- [93] &quot;CIUTADANS-PARTIDO DE LA CIUDADANIA&quot;                                                    
- [94] &quot;EI ESCONS INSUBMISOS-ALTERNATIVA DELS DEMOCRATES DESCONTENTS&quot;                          
- [95] &quot;IZQUIERDA REPUBLICANA-PARTIT REPUBLICA D&#39;ESQUERRA&quot;                                     
- [96] &quot;SOLIDARIDAD Y AUTOGESTION INTERNACIONALISTA&quot;                                           
- [97] &quot;PARTIT HUMANISTA DE CATALUNYA&quot;                                                         
- [98] &quot;AGRUPACION CIUDADANA&quot;                                                                  
- [99] &quot;PARTIDO COMUNISTA DEL PUEBLO CASTELLANO-PCPE&quot;                                          
-[100] &quot;INICIATIVA CIUDADANA BURGALESA&quot;                                                        
-[101] &quot;ALIANZA POR BURGOS&quot;                                                                    
-[102] &quot;PARTIDO CARLISTA&quot;                                                                      
-[103] &quot;INICIATIVA MERINDADES DE CASTILLA&quot;                                                     
-[104] &quot;LOS VERDES DE EXTREMADURA&quot;                                                             
-[105] &quot;PARTIDO POSITIVISTA CRISTIANO&quot;                                                         
-[106] &quot;ESQUERRA REPUBLICANA DEL PAIS VALENCIA-PAIS VALENCIA, SI&quot;                              
-[107] &quot;PARTIT COMUNISTA DELS POBLES D&#39;ESPANYA&quot;                                                
-[108] &quot;IDENTITAT REGNE DE VALENCIA&quot;                                                           
-[109] &quot;UNIDAD CASTELLANA&quot;                                                                     
-[110] &quot;IZQUIERDA UNIDA LOS VERDES CONVOCATORIA POR ANDALUCIA-ALTERNATIVA&quot;                     
-[111] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA-PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;                  
-[112] &quot;ESQUERDA UNIDA-IZQUIERDA UNIDA-ALTERNATIVA&quot;                                            
-[113] &quot;BLOQUE NACIONALISTA GALEGO&quot;                                                            
-[114] &quot;ASAMBLEA DE VOTACION ELECTRONICA&quot;                                                      
-[115] &quot;INDEPENDIENTES POR CUENCA&quot;                                                             
-[116] &quot;ESCONS INSUBMISOS-ALTERNATIVA DELS DEMOCRATES DESCONTENTS&quot;                             
-[117] &quot;ELS VERDS-ALTERNATIVA VERDA&quot;                                                           
-[118] &quot;PARTIT HUMANISTA&quot;                                                                      
-[119] &quot;PARTIT COMUNISTA DEL POBLE DE CATALUNYA&quot;                                               
-[120] &quot;FAMILIA I VIDA&quot;                                                                        
-[121] &quot;IZQUIERDA UNIDA LOS VERDES-CONVOCATORIA POR ANDALUCIA-ALTERNATIVA&quot;                     
-[122] &quot;PARTIDO REGIONALISTA DE GUADALAJARA&quot;                                                   
-[123] &quot;PARTIDO POLITICO ARALAR&quot;                                                               
-[124] &quot;PARTIDO SOCIALISTA DE EUSKADI-EUSKADIKO EZKERRA (PSOE)&quot;                                
-[125] &quot;UNION CENTRISTA LIBERAL&quot;                                                               
-[126] &quot;CHUNTA ARAGONESISTA&quot;                                                                   
-[127] &quot;PARTIDO ARAGONES&quot;                                                                      
-[128] &quot;PARTIDO SOCIAL DEMOCRATA-FEDERACION DE LOS INDEPENDIENTES DE ARAGON&quot;                   
-[129] &quot;PARTIDO CIUDADANOS UNIDOS DE ARAGON&quot;                                                   
-[130] &quot;PARTIDO SOCIALISTA OBRERO ESPAÑOL DE ANDALUCIA&quot;                                        
-[131] &quot;UNION DEL PUEBLO LEONES&quot;                                                               
-[132] &quot;PARTIDO UNIONISTA ESTADO DE ESPAÑA&quot;                                                    
-[133] &quot;GENTES DE EL BIERZO&quot;                                                                   
-[134] &quot;PARTIDO REGIONALISTA DEL PAIS LEONES&quot;                                                  
-[135] &quot;ESCONS INSUBMISOS ALTERNATIVA DELS DEMOCRATES DESCONTENTS&quot;                             
-[136] &quot;INICIATIVA PER CATALUNYA VERDS - ESQUERRA UNIDA I ALTERNATIVA&quot;                         
-[137] &quot;PARTIDO RIOJANO&quot;                                                                       
-[138] &quot;ALTERNATIVA EN BLANCO&quot;                                                                 
-[139] &quot;PARTIDO COMUNISTA DO POVO GALEGO&quot;                                                      
-[140] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA-PSOE&quot;                                               
-[141] &quot;IZQUIERDA UNIDA COMUNIDAD DE MADRID-ALTERNATIVA&quot;                                       
-[142] &quot;PARTIDO DE LOS NO-FUMADORES&quot;                                                           
-[143] &quot;LOS VERDES COMUNIDAD DE MADRID-LOS VERDES DE EUROPA&quot;                                   
-[144] &quot;PARTIDO LIBERTADES CIVILES&quot;                                                            
-[145] &quot;PARTIDO DE ALIANZA IBEROAMERICANA EUROPEA&quot;                                             
-[146] &quot;CENTRO DEMOCRATICO SOCIAL&quot;                                                             
-[147] &quot;PARTIDO LIBERAL DEL EMPLEO Y LA VIVIENDA ESTATAL&quot;                                      
-[148] &quot;UNION POR LEGANES&quot;                                                                     
-[149] &quot;PARTIDO SOLIDARIDAD Y AUTOGESTION INTERNACIONALISTA&quot;                                   
-[150] &quot;LUCHA INTERNACIONALISTA&quot;                                                               
-[151] &quot;IZQUIERDA UNIDA DE LA REGION DE MURCIA-ALTERNATIVA&quot;                                    
-[152] &quot;UNION DEL PUEBLO NAVARRO EN COALICION CON EL PARTIDO POPULAR&quot;                          
-[153] &quot;NAFARROA BAI&quot;                                                                          
-[154] &quot;IZQUIERDA UNIDA DE NAVARRA - NAFARROAKO EZKER BATUA - ALTERNATIVA&quot;                     
-[155] &quot;PARTIDO COMUNISTA DE LOS PUEBLOS DE ESPAÑA-EUSKAL KOMUNISTAK&quot;                          
-[156] &quot;PARTIDO COMUNISTA DO POBO GALEGO&quot;                                                      
-[157] &quot;UNION, PROGRESO Y DEMOCRACIA&quot;                                                          
-[158] &quot;IZQUIERDA UNIDA - BLOQUE POR ASTURIES - LOS VERDES&quot;                                    
-[159] &quot;ANDECHA ASTUR&quot;                                                                         
-[160] &quot;CONVERGENCIA DEMOCRATICA ASTURIANA&quot;                                                    
-[161] &quot;IZQUIERDA REPUBLICANA&quot;                                                                 
-[162] &quot;UNIDA&quot;                                                                                 
-[163] &quot;MOVIMIENTO FALANGISTA DE ESPAÑA&quot;                                                       
-[164] &quot;IZQUIERDA UNIDA CANARIA-ALTERNATIVA&quot;                                                   
-[165] &quot;COALICION CANARIA-PARTIDO NACIONALISTA CANARIO-PARTIDO DE INDEPENDIENTES DE LANZAROTE&quot; 
-[166] &quot;PARTIDO COMUNISTA DEL PUEBLO CANARIO&quot;                                                  
-[167] &quot;UNIDAD DEL PUEBLO&quot;                                                                     
-[168] &quot;MOVIMIENTO POR LA UNIDAD DEL PUEBLO CANARIO&quot;                                           
-[169] &quot;ALTERNATIVA NACIONALISTA CANARIA&quot;                                                      
-[170] &quot;NUEVA CANARIAS-CENTRO CANARIO&quot;                                                         
-[171] &quot;OS VERDES - GRUPO VERDE&quot;                                                               
-[172] &quot;PARTIDO POR UN MUNDO MAS JUSTO&quot;                                                        
-[173] &quot;PARTIDO ALTERNATIVA MOTOR Y DEPORTES&quot;                                                  
-[174] &quot;UNION CIUDADANA PROGRESISTAS INDEPENDIENTES DE CANARIAS&quot;                               
-[175] &quot;COALICION CANARIA-PARTIDO NACIONALISTA CANARIO&quot;                                        
-[176] &quot;PARTIDO COMUNISTA PUEBLOS DE ESPAÑA&quot;                                                   
-[177] &quot;ALTERNATIVA MOTOR Y DEPORTE&quot;                                                           
-[178] &quot;PARTIDO POPULAR/PARTIT POPULAR&quot;                                                        
-[179] &quot;PARTIDO IZQUIERDA REPUBLICANA-PARTIT REPUBLICA D&#39;ESQUERRA&quot;                             
-[180] &quot;NOSALTRES SOM&quot;                                                                         
-[181] &quot;PARTIDO COMUNISTA DEL PUEBLO DE CATALUÑA&quot;                                              
-[182] &quot;PARTIDO CENTRISTA&quot;                                                                     
-[183] &quot;ESQUERRA UNIDA DEL PAIS VALENCIA-IZQUIERDA REPUBLICANA:ESQUERRA UNIDA I REPUBLICANA&quot;   
-[184] &quot;UNIDAD REGIONALISTA DE CASTILLA Y LEON&quot;                                                
-[185] &quot;PARTIDO CARLISTA DE EUSKALERRIA-PARTIDO CARLISTA&quot;                                      
-[186] &quot;IZQUIERDA UNIDA DE CEUTA&quot;                                                              
-[187] &quot;BIDEZKO MUNDURANTZ/POR UN MUNDO MAS JUSTO&quot;                                             
-[188] &quot;UNIÓN PROGRESO Y DEMOCRACIA&quot;                                                           
-[189] &quot;EQUO&quot;                                                                                  
-[190] &quot;PARTIDO ANIMALISTA CONTRA EL MALTRATO ANIMAL&quot;                                          
-[191] &quot;AMAIUR&quot;                                                                                
-[192] &quot;UNIFICACIÓN COMUNISTA DE ESPAÑA&quot;                                                       
-[193] &quot;IZQUIERDA UNIDA-LOS VERDES: LA IZQUIERDA PLURAL/EZKER ANITZA (IU-LV)&quot;                  
-[194] &quot;IZQUIERDA UNIDA DE CASTILLA-LA MANCHA-LOS VERDES: LA IZQUIERDA PLURAL&quot;                 
-[195] &quot;POR UN MUNDO MÁS JUSTO&quot;                                                                
-[196] &quot;ESCAÑOS EN BLANCO&quot;                                                                     
-[197] &quot;FORO CENTRO Y DEMOCRACIA&quot;                                                              
-[198] &quot;ESQUERRA UNIDA DEL PAIS VALENCIA-LOS VERDES: L&#39;ESQUERRA PLURAL&quot;                        
-[199] &quot;BLOC-INICIATIVA-VERDS-EQUO-COALICIÓ COMPROMÍS&quot;                                         
-[200] &quot;ESQUERRA REPUBLICANA DEL PAÍS VALENCIÀ&quot;                                                
-[201] &quot;REPUBLICANOS&quot;                                                                          
-[202] &quot;ANTICAPITALISTAS&quot;                                                                      
-[203] &quot;PARTIDO ANDALUCISTA&quot;                                                                   
-[204] &quot;IZQUIERDA UNIDA LOS VERDES-CONVOCATORIA POR ANDALUCÍA: LA IZQUIERDA PLURAL(IULV-CA)&quot;   
-[205] &quot;PARTIDO REGIONALISTA POR ANDALUCIA ORIENTAL&quot;                                           
-[206] &quot;DEMOS EL CAMBIO&quot;                                                                       
-[207] &quot;IZQUIERDA UNIDA DE CASTILLA Y LEON: LA IZQUIERDA PLURAL (IUCL)&quot;                        
-[208] &quot;HARTOS.ORG&quot;                                                                            
-[209] &quot;PARTIDO POPULAR-EXTREMADURA UNIDA&quot;                                                     
-[210] &quot;IZQUIERDA UNIDA VERDES-SOCIALISTAS INDEPENDIENTES DE EXTREMADURA: LA IZQUIERDA PLURAL&quot; 
-[211] &quot;CONVERGENCIA POR EXTREMADURA&quot;                                                          
-[212] &quot;ESQUERRA REPUBLICANA&quot;                                                                  
-[213] &quot;PSM-INICIATIVA VERDS-ENTESA-EQUO&quot;                                                      
-[214] &quot;ESCONS EN BLANC&quot;                                                                       
-[215] &quot;ESQUERRA UNIDA ILLES BALEARS: LA IZQUIERDA PLURAL&quot;                                     
-[216] &quot;ESQUERRA REPUBLICANA DE CATALUNYA-CATALUNYA SÍ&quot;                                        
-[217] &quot;PARTIT ANIMALISTA CONTRA EL MALTRACTAMENT ANIMAL&quot;                                      
-[218] &quot;ANTICAPITALISTES&quot;                                                                      
-[219] &quot;PIRATES DE CATALUNYA&quot;                                                                  
-[220] &quot;PLATAFORMA PER CATALUNYA&quot;                                                              
-[221] &quot;INICIATIVA PER CATALUNYA VERDS-ESQUERRA UNIDA I ALTERNATIVA: L&#39;ESQUERRA PLURAL&quot;        
-[222] &quot;CONVERGÈNCIA I UNIÓ&quot;                                                                   
-[223] &quot;PARTIDO DE CASTILLA Y LEÓN&quot;                                                            
-[224] &quot;IZQUIERDA UNIDA DE CASTILLA Y LEÓN: LA IZQUIERDA PLURAL&quot;                               
-[225] &quot;CIUDADANOS DE CENTRO DEMOCRÁTICO&quot;                                                      
-[226] &quot;IZQUIERDA UNIDA LOS VERDES-CONVOCATORIA POR ANDALUCÍA: LA IZQUIERDA PLURAL&quot;            
-[227] &quot;PARTIDO DE INTERNET&quot;                                                                   
-[228] &quot;PARTIDO PIRATA&quot;                                                                        
-[229] &quot;ESQUERRA UNIDA PAÍS VALENCIÀ-ELS VERDS: L&#39;ESQUERRA PLURAL&quot;                             
-[230] &quot;CONVERXENCIA VINTEÚN&quot;                                                                  
-[231] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA - PSOE&quot;                                             
-[232] &quot;ESQUERDA UNIDA-OS VERDES: A ESQUERDA PLURAL&quot;                                           
-[233] &quot;PARTIDO CASTELLANO&quot;                                                                    
-[234] &quot;CONVERGÈNCIA i UNIÓ&quot;                                                                   
-[235] &quot;INICIATIVA PER CATALUNYA VERDS-ESQUERRA UNIDA i ALTERNATIVA: L&#39;ESQUERRA PLURAL&quot;        
-[236] &quot;BIDEZKO MUNDURANTZ/POR UN MUNDO MÁS JUSTO&quot;                                             
-[237] &quot;IZQUIERDA UNIDA-LOS VERDES: LA IZQUIERDA PLURAL/EZKER ANITZA&quot;                          
-[238] &quot;CHUNTA ARAGONESISTA-IZQUIERDA UNIDA, LA IZQUIERDA DE ARAGÓN: LA IZQUIERDA PLURAL&quot;      
-[239] &quot;PARTIDO POPULAR EN COALICIÓN CON EL PARTIDO ARAGONÉS&quot;                                  
-[240] &quot;PER UN MÓN MÉS JUST&quot;                                                                   
-[241] &quot;IZQUIERDA UNIDA-LA IZQUIERDA PLURAL&quot;                                                   
-[242] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA - PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;                
-[243] &quot;IZQUIERDA UNIDA-LOS VERDES: LA IZQUIERDA PLURAL&quot;                                       
-[244] &quot;FORO DE CIUDADANOS&quot;                                                                    
-[245] &quot;PARTIDO DE LA LIBERTAD INDIVIDUAL&quot;                                                     
-[246] &quot;ACCION CIUDADANA POR MALAGA&quot;                                                           
-[247] &quot;PARTIDO PARA LA REGENERACION DE LA DEMOCRACIA EN ESPAÑA&quot;                               
-[248] &quot;MUERTE AL SISTEMA&quot;                                                                     
-[249] &quot;IZQUIERDA UNIDA-VERDES DE LA REGION DE MURCIA: LA IZQUIERDA PLURAL&quot;                    
-[250] &quot;UNIÓN DEL PUEBLO NAVARRO EN COALICIÓN CON EL PARTIDO POPULAR&quot;                          
-[251] &quot;IZQUIERDA-EZKERRA/LA IZQUIERDA PLURAL&quot;                                                 
-[252] &quot;GEROA BAI&quot;                                                                             
-[253] &quot;IZQUIERDA UNIDA DE ASTURIAS-IZQUIERDA XUNIDA D&#39;ASTURIES:LA IZQUIERDA PLURAL&quot;           
-[254] &quot;PARTIDO DEMOCRATICO Y CONSTITUCIONAL&quot;                                                  
-[255] &quot;COALICIÓN CANARIA-NUEVA CANARIAS&quot;                                                      
-[256] &quot;CANARIAS VERDE Y ROJA: LA IZQUIERDA PLURAL&quot;                                            
-[257] &quot;HIGIENE DEMOCRATICA&quot;                                                                   
-[258] &quot;SÍ SE PUEDE, SOCIALISTAS POR TENERIFE, EQUO&quot;                                           
-[259] &quot;IZQUIERDA UNIDA CANARIA-INICIATIVA POR EL HIERRO-LOS VERDES: LA IZQUIERDA PLURAL&quot;      
-[260] &quot;BASTA YA, AGRUPACIÓN ABIERTA DE PARTIDOS POLÍTICOS&quot;                                    
-[261] &quot;IZQUIERDA UNIDA DE CANTABRIA: LA IZQUIERDA PLURAL&quot;                                     
-[262] &quot;PARTIDO REGIONALISTA DE CANTABRIA&quot;                                                     
-[263] &quot;PARTIT REPUBLICÀ D&#39;ESQUERRA-REPUBLICANS&quot;                                               
-[264] &quot;SOCIALISTAS POR TERUEL&quot;                                                                
-[265] &quot;UNION DE CIUDADANOS INDEPENDIENTES DE TOLEDO&quot;                                          
-[266] &quot;ESCAÑOS EN BLANCO/ESCONS EN BLANC&quot;                                                     
-[267] &quot;UNITS X VALENCIA&quot;                                                                      
-[268] &quot;IU - LOS VERDES: LA IZQUIERDA PLURAL / EZKER ANITZA&quot;                                   
-[269] &quot;CHUNTA ARAGONESISTA-IZQUIERDA UNIDA, La Izquierda de Aragón: La Izquierda Plural&quot;      
-[270] &quot;COALICION CABALLAS&quot;                                                                    
-[271] &quot;IZQUIERDA UNIDA - PARTIDO DEMOCRÁTICO Y SOCIAL DE CEUTA: LA IZQUIERDA PLURAL&quot;          
-[272] &quot;PARTIDO SOCIALISTA DE EUSKADI-EUSKADIKO EZKERRA (P&quot;                                    
-[273] &quot;RECORTES CERO-GRUPO VERDE&quot;                                                             
-[274] &quot;UNIDAD POPULAR- ORAIN BATERA:EZKER ANITZA-IZQUIERD&quot;                                    
-[275] &quot;PODEMOS-AHAL DUGU&quot;                                                                     
-[276] &quot;ONGI ETORRI&quot;                                                                           
-[277] &quot;CIUDADANOS-PARTIDO DE LA CIUDADANÍA&quot;                                                   
-[278] &quot;EUSKAL HERRIA BILDU&quot;                                                                   
-[279] &quot;ESCAÑOS EN BLANCO - AULKI ZURIAK&quot;                                                      
-[280] &quot;LIBERTAD NAVARRA-LIBERTATE NAFARRA&quot;                                                    
-[281] &quot;UNIDAD POPULAR: IZQUIERDA UNIDA, UNIDAD POPULAR EN&quot;                                    
-[282] &quot;PODEMOS&quot;                                                                               
-[283] &quot;PARTIDO LIBERAL DE DERECHAS&quot;                                                           
-[284] &quot;VOX&quot;                                                                                   
-[285] &quot;UNITAT POPULAR:ESQUERRA UNIDA DEL PAÍS VALENCIÀ, U&quot;                                    
-[286] &quot;COMPROMÍS-PODEMOS-ÉS EL MOMENT&quot;                                                        
-[287] &quot;SOM VALENCIANS&quot;                                                                        
-[288] &quot;ARA, PAÍS VALENCIÀ&quot;                                                                    
-[289] &quot;FORO DEMÓCRATA&quot;                                                                        
-[290] &quot;LOS VERDES-ECOPACIFISTAS&quot;                                                              
-[291] &quot;PARTIDO LIBERTARIO&quot;                                                                    
-[292] &quot;UNIDAD POPULAR: IZQUIERDA UNIDA LOS VERDES-CONVOCA&quot;                                    
-[293] &quot;CIUDADANOS PARTIDO DE LA CIUDADANÍA&quot;                                                   
-[294] &quot;EXTREMADURA UNIDA-EXTREMEÑOS&quot;                                                          
-[295] &quot;UNITAT POPULAR BALEARS: IZQUIERDA UNIDA, UNIDAD PO&quot;                                    
-[296] &quot;EL PI - PROPOSTA PER LES ILLES&quot;                                                        
-[297] &quot;MÉS&quot;                                                                                   
-[298] &quot;UNIÓ DEMOCRÀTICA DE CATALUNYA&quot;                                                         
-[299] &quot;CIUTADANS-PARTIDO DE LA CIUDADANÍA&quot;                                                    
-[300] &quot;EN COMÚ PODEM&quot;                                                                         
-[301] &quot;DEMOCRÀCIA I LLIBERTAT. CONVERGÈNCIA. DEMÒCRATES.&quot;                                     
-[302] &quot;INICIATIVA FEMINISTA&quot;                                                                  
-[303] &quot;SOLIDARIDAD Y AUTOGESTIÓN INTERNACIONALISTA&quot;                                           
-[304] &quot;UNIDAD POPULAR: IZQUIERDA UNIDA-UNIDAD POPULAR EN&quot;                                     
-[305] &quot;UNITAT POPULAR: ESQUERRA UNIDA DEL PAÍS VALENCIÀ,&quot;                                     
-[306] &quot;PARTIT COMUNISTA DELS POBLES D¿ESPANYA&quot;                                                
-[307] &quot;PARTIDO ANIMALISTA-CONTRA EL MALTRATO ANIMAL&quot;                                          
-[308] &quot;PARTIDO COMUNISTA OBRERO ESPAÑOL&quot;                                                      
-[309] &quot;COMUNISTAS DA GALIZA&quot;                                                                  
-[310] &quot;NÓS-CANDIDATURA GALEGA (BNG-CG-FOGA-PCPG-PG)&quot;                                          
-[311] &quot;EN MAREA&quot;                                                                              
-[312] &quot;PARTIDO ANIMALISTA CONTRA O MALTRATO ANIMAL&quot;                                           
-[313] &quot;PARTIDO DA TERRA&quot;                                                                      
-[314] &quot;CIUTADANS - PARTIDO DE LA CIUDADANÍA&quot;                                                  
-[315] &quot;UNIDAD POPULAR: IZQUIERDA UNIDA LOS VERDES - CONVO&quot;                                    
-[316] &quot;PARTIDO POPULAR (PP)&quot;                                                                  
-[317] &quot;EUSKAL HERRIA BILDU (EH Bildu)&quot;                                                        
-[318] &quot;CIUDADANOS-PARTIDO DE LA CIUDADANÍA (C&#39;s)&quot;                                             
-[319] &quot;UNIDAD POPULAR-ORAIN BATERA:EZKER ANITZA-IZQUIERDA&quot;                                    
-[320] &quot;LIBERTAD NAVARRA, LIBERTATE NAFARRA (Ln)&quot;                                              
-[321] &quot;PARTIDO ANIMALISTA CONTRA EL MALTRATO ANIMAL (PACM&quot;                                    
-[322] &quot;UNIÓN PROGRESO Y DEMOCRACIA (UPYD)&quot;                                                    
-[323] &quot;CIUDADANOS, PARTIDO DE LA CIUDADANÍA&quot;                                                  
-[324] &quot;PODEMOS-Ahora Alto Aragón en Común&quot;                                                    
-[325] &quot;UNIDAD POPULAR EN ARAGÓN: IZQUIERDA UNIDA, CHUNTA&quot;                                     
-[326] &quot;PARTIDO POPULAR EN COALICIÓN CON EL PARTIDO ARAGON&quot;                                    
-[327] &quot;INDEPENDIENTES POR ARAGÓN&quot;                                                             
-[328] &quot;CIUDADANOS LIBRES UNIDOS&quot;                                                              
-[329] &quot;ANDALUCES DE JAÉN UNIDOS&quot;                                                              
-[330] &quot;CIUDADANOS RURALES AGRUPADOS&quot;                                                          
-[331] &quot;PARTIDO REGIONALISTA DEL PAÍS LEONÉS&quot;                                                  
-[332] &quot;COMUNISTAS DA GALIZA-PCPE&quot;                                                             
-[333] &quot;X LA IZQUIERDA-LOS VERDES&quot;                                                             
-[334] &quot;MÁLAGA POR SÍ&quot;                                                                         
-[335] &quot;SOLUCIONA&quot;                                                                             
-[336] &quot;UNIDAD POPULAR: UNIDAD POPULAR EN COMÚN, IZQUIERDA&quot;                                    
-[337] &quot;UNIÓN DEL PUEBLO NAVARRO EN COALICIÓN CON EL PARTI&quot;                                    
-[338] &quot;UNIDAD POPULAR-ORAIN BATERA:IZQUIERDA UNIDA, BATZA&quot;                                    
-[339] &quot;LIBERTAD NAVARRA, LIBERTATE NAFARRA&quot;                                                   
-[340] &quot;X A ESQUERDA&quot;                                                                          
-[341] &quot;PARTIDO POPULAR-FORO&quot;                                                                  
-[342] &quot;UNIDAD POPULAR: IZQUIERDA UNIDA. UNIDAD POPULAR EN&quot;                                    
-[343] &quot;CANARIAS DECIDE: LOS VERDES, UNIDAD DEL PUEBLO Y A&quot;                                    
-[344] &quot;COALICIÓN CANARIA - PARTIDO NACIONALISTA CANARIO&quot;                                      
-[345] &quot;PARTIDO SOCIALISTA OBRERO ESPAÑOL-NUEVA CANARIAS&quot;                                      
-[346] &quot;COALICIÓN CANARIA-PARTIDO NACIONALISTA CANARIO&quot;                                        
-[347] &quot;UNIDAD POPULAR: IZQUIERDA UNIDA CANARIA, UNIDAD PO&quot;                                    
-[348] &quot;PARTIT DELS SOCIALISTES DE CATALUNYA (PSC-PSOE)&quot;                                       
-[349] &quot;ESCONS EN BLANC/ESCAÑOS EN BLANCO&quot;                                                     
-[350] &quot;AVANT VALENCIANS&quot;                                                                      
-[351] &quot;EN POSITIU&quot;                                                                            
-[352] &quot;ESCAÑOS EN BLANCO-AULKI ZURIAK&quot;                                                        
-[353] &quot;PODEMOS/AHAL DUGU&quot;                                                                     
-[354] &quot;EZKERRA-X LA IZQUIERDA&quot;                                                                
-[355] &quot;JUSTIZIA SOCIAL, PARTICIPACIÓN CIUDADANA&quot;                                              
-[356] &quot;UNIDAD POPULAR-IZQUIERDA UNIDA&quot;                                                        
-[357] &quot;PARTIDO SOCIALISTA DE EUSKADI-EUSKADIKO EZKERRA(PSOE)&quot;                                 
-[358] &quot;UNIDOS PODEMOS/ELKARREKIN AHAL DUGU&quot;                                                   
-[359] &quot;UNIDOS PODEMOS&quot;                                                                        
-[360] &quot;COMPROMÍS-PODEMOS-EUPV: A LA VALENCIANA&quot;                                               
-[361] &quot;UNIDOS PODEMOS POR ANDALUCÍA&quot;                                                          
-[362] &quot;IZQUIERDA ANTICAPITALISTA REVOLUCIONARIA&quot;                                              
-[363] &quot;SOBIRANIA PER A LES ILLES&quot;                                                             
-[364] &quot;UNITS PODEM MÉS&quot;                                                                       
-[365] &quot;EN COMÚ PODEM-GUANYEM EL CANVI&quot;                                                        
-[366] &quot;ESQUERRA REPUBLICANA/CATALUNYA SÍ&quot;                                                     
-[367] &quot;CONVERGÈNCIA DEMOCRÀTICA DE CATALUNYA&quot;                                                 
-[368] &quot;CIUTADANS, PARTIDO DE LA CIUDADANÍA&quot;                                                   
-[369] &quot;PARTIDO SOMOS ANDALUCES POR ANDALUCÍA Y LOS PUEBLO&quot;                                    
-[370] &quot;BNG-NÓS CANDIDATURA GALEGA&quot;                                                            
-[371] &quot;UNIDOS PODEMOS EN ALTO ARAGÓN&quot;                                                         
-[372] &quot;ENTABAN&quot;                                                                               
-[373] &quot;MOVIMIENTO ARAGONÉS SOCIAL&quot;                                                            
-[374] &quot;UNIÓN DEL PUEBLO LEONÉS&quot;                                                               
-[375] &quot;ALIANZA DE CENTRO DEMOCRÁTICO&quot;                                                         
-[376] &quot;HEGOALDE RIOJA-LIBERTAD NAVARRA&quot;                                                       
-[377] &quot;LA FUERZA DE LOS MAYORES DE ESPAÑA&quot;                                                    
-[378] &quot;UNIDOS PODEMOS-ELKARREKIN AHAL DUGU&quot;                                                   
-[379] &quot;UNIDOS PODEMOS/XUNÍOS PODEMOS&quot;                                                         
-[380] &quot;JUNTOS POR CANARIAS&quot;                                                                   
-[381] &quot;ESCANOS EN BRANCO&quot;                                                                     
-[382] &quot;UNIDOS PODEMOS EN ARAGÓN&quot;                                                              
-[383] &quot;UNIÓN DE TODOS&quot;                                                                        
-[384] &quot;LA FALANGE&quot;                                                                            
-[385] &quot;RENOVACIO POLITICA&quot;                                                                    
-[386] &quot;CIUDADANOS DE CENTRO DEMOCRÁTICO-CANDIDATURA INDEP&quot;                                    
-[387] &quot;PARTIDO COMUNISTA DE LOS TRABAJADORES DE EUSKADI/E&quot;                                    
-[388] &quot;ELKARREKIN PODEMOS-UNIDAS PODEMOS&quot;                                                     
-[389] &quot;POR UN MUNDO MÁS JUSTO (BIDEZKO MUNDURANTZ)&quot;                                           
-[390] &quot;UNIDAS PODEMOS&quot;                                                                        
-[391] &quot;PARTIDO COMUNISTA DE LOS TRABAJADORES DE ESPAÑA&quot;                                       
-[392] &quot;RECORTES CERO-GRUPO VERDE-PARTIDO CASTELLANO-TIERR&quot;                                    
-[393] &quot;LOS VERDES ECOPACIFISTAS ADELANTE&quot;                                                     
-[394] &quot;COMPROMÍS: BLOC-INICIATIVA-VERDSEQUO&quot;                                                  
-[395] &quot;PARTIDO COMUNISTA DEL PUEBLO ANDALUZ&quot;                                                  
-[396] &quot;ACTÚA&quot;                                                                                 
-[397] &quot;EXTREMEÑOS PREX CREX&quot;                                                                  
-[398] &quot;DEFENSA DE LO PÚBLICO&quot;                                                                 
-[399] &quot;EL PI - PROPOSTA PER LES ILLES BALEARS&quot;                                                
-[400] &quot;UNIDAS PODEMOS-UNIDES PODEM&quot;                                                           
-[401] &quot;Veus PROGRESSISTES&quot;                                                                    
-[402] &quot;PARTIT SOCIALISTA OBRER ESPANYOL&quot;                                                      
-[403] &quot;IZQUIERDA EN POSITIVO&quot;                                                                 
-[404] &quot;JUNTS PER CATALUNYA-JUNTS&quot;                                                             
-[405] &quot;ESQUERRA REPUBLICANA DE CATALUNYA-SOBIRANISTES&quot;                                        
-[406] &quot;POBLE LLIURE - SOM ALTERNATIVA - PIRATES DE CATALU&quot;                                    
-[407] &quot;EN COMÚ PODEM - GUANYEM EL CANVI&quot;                                                      
-[408] &quot;PARTIT COMUNISTA DELS TREBALLADORS DE CATALUNYA&quot;                                       
-[409] &quot;CONVERGENTS&quot;                                                                           
-[410] &quot;ANDALUCÍA POR SÍ&quot;                                                                      
-[411] &quot;AVANT ADELANTE LOS VERDES&quot;                                                             
-[412] &quot;PARTIDO DEMÓCRATA SOCIAL JUBILADOS EUROPEOS - UNID&quot;                                    
-[413] &quot;PARTIDO COMUNISTA DOS TRABALLADORES DE GALIZA&quot;                                         
-[414] &quot;COMPROMISO POR GALICIA&quot;                                                                
-[415] &quot;EN COMÚN-UNIDAS PODEMOS&quot;                                                               
-[416] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA-PARTIDO SOCIALI&quot;                                    
-[417] &quot;PARTIDO DE JUBILADOS POR EL FUTURO. DIGNIDAD Y DEM&quot;                                    
-[418] &quot;EUSKADIKO LANGILEEN ALDERDI KOMUNISTA/PARTIDO COMU&quot;                                    
-[419] &quot;UNIDAS PODEMOS-ALTOARAGÓN EN COMÚN&quot;                                                    
-[420] &quot;FEDERACION DE LOS INDEPENDIENTES DE ARAGON&quot;                                            
-[421] &quot;PUYALON&quot;                                                                               
-[422] &quot;CIUDADANOS INDEPENDIENTES DE LINARES UNIDOS&quot;                                           
-[423] &quot;PARTIDO REPUBLICANO INDEPENDIENTE SOLIDARIO ANDALU&quot;                                    
-[424] &quot;PARTIT POPULAR-PARTIDO POPULAR&quot;                                                        
-[425] &quot;CONVERXENCIA 21&quot;                                                                       
-[426] &quot;SOMOS REGIÓN&quot;                                                                          
-[427] &quot;DEMOCRACIA PLURAL&quot;                                                                     
-[428] &quot;NAVARRA SUMA&quot;                                                                          
-[429] &quot;VIVIR OURENSE&quot;                                                                         
-[430] &quot;UNIDAS PODEMOS-XUNIES PODEMOS&quot;                                                         
-[431] &quot;PARTIDO POPULAR - FORO&quot;                                                                
-[432] &quot;AHORA CANARIAS: Alternativa Nacionalista Canaria A&quot;                                    
-[433] &quot;NUEVA CANARIAS&quot;                                                                        
-[434] &quot;FEMINISM8&quot;                                                                             
-[435] &quot;CENTRADOS&quot;                                                                             
-[436] &quot;PLATAFORMA DEL PUEBLO SORIANO&quot;                                                         
-[437] &quot;SOM VALENCIANS EN MOVIMENT&quot;                                                            
-[438] &quot;UNIÓN REGIONALISTA DE CASTILLA Y LEÓN&quot;                                                 
-[439] &quot;PARTIDO DE ACCIÓN SOLIDARIA EUROPEA&quot;                                                   
-[440] &quot;COALICION POR MELILLA&quot;                                                                 
-[441] &quot;BIDEZKO MUNDURANTZ-POR UN MUNDO MÁS JUSTO&quot;                                             
-[442] &quot;PARTIDO COMUNISTA DE LOS TRABAJADORES DE EUSKADI/EUSKADIKO LANGILEEN ALDERDI KOMUNISTA&quot;
-[443] &quot;PARTIDO DEMÓCRATA SOCIAL JUBILADOS EUROPEOS&quot;                                           
-[444] &quot;RECORTES CERO-GRUPO VERDE-PARTIDO CASTELLANO-TIERRA COMUNERA&quot;                          
-[445] &quot;MÉS COMPROMÍS&quot;                                                                         
-[446] &quot;POR ÁVILA&quot;                                                                             
-[447] &quot;MÁS PAÍS&quot;                                                                              
-[448] &quot;MÉS ESQUERRA&quot;                                                                          
-[449] &quot;CANDIDATURA D&#39;UNITAT POPULAR-PER LA RUPTURA&quot;                                           
-[450] &quot;MÁS PAÍS-ANDALUCÍA&quot;                                                                    
-[451] &quot;AUNA COMUNITAT VALENCIANA&quot;                                                             
-[452] &quot;MÁS PAÍS-EQUO&quot;                                                                         
-[453] &quot;POR UN MUNDO MÁIS XUSTO/POR UN MUNDO MÁS JUSTO&quot;                                        
-[454] &quot;PARTIDO POPULAR / PARTIT POPULAR&quot;                                                      
-[455] &quot;CONVERGENCIA ANDALUZA&quot;                                                                 
-[456] &quot;EUSKADIKO LANGILEEN ALDERDI KOMUNISTA/PARTIDO COMUNISTA DE LOS TRABAJADORES DE EUSKADI&quot;
-[457] &quot;FEDERACIÓN DE LOS INDEPENDIENTES DE ARAGÓN&quot;                                            
-[458] &quot;PARTIDO REPUBLICANO INDEPENDIENTE SOLIDARIO ANDALUZ&quot;                                   
-[459] &quot;CONTIGO SOMOS DEMOCRACIA&quot;                                                              
-[460] &quot;PARTIDO COMUNISTA DE LOS TRABAJADORES DE ESPAÑA/ES&quot;                                    
-[461] &quot;POR UN MUNDO MÁS JUSTO/BIDEZKO MUNDURANTZ&quot;                                             
-[462] &quot;UNIDAS PODEMOS-XUNÍES PODEMOS&quot;                                                         
-[463] &quot;AHORA CANARIAS: Alternativa Nacionalista Canaria (ANC) y Unidad del Pueblo&quot;            
-[464] &quot;NUEVA CANARIAS-COALICIÓN CANARIA&quot;                                                      
-[465] &quot;AGRUPACIÓN DE ELECTORES TERUEL EXISTE&quot;                                                 
-[466] &quot;UNIDOS Actuando por la Democracia&quot;                                                     
-[467] &quot;MÁS PAÍS-CANDIDATURA ECOLOGISTA&quot;                                                       
-[468] &quot;MÁS PAÍS-CHUNTA ARAGONESISTA-EQUO&quot;                                                     
-[469] &quot;MOVIMIENTO ARAGONES SOCIAL&quot;                                                            
-[470] &quot;MOVIMIENTO POR LA DIGNIDAD Y LA CIUDADANÍA DE CEUT&quot;                                    
-[471] &quot;COALICIÓN POR MELILLA&quot;                                                                 </code></pre>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href></a><span class="fu">names</span>(election_data)</span>
+<span id="cb4-2"><a href></a></span>
+<span id="cb4-3"><a href></a><span class="co">#Convertir a tidy data</span></span>
+<span id="cb4-4"><a href></a>eleccion_tidy <span class="ot">&lt;-</span> election_data <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="dv">16</span><span class="sc">:</span><span class="dv">471</span>), <span class="at">names_to =</span> <span class="st">&quot;partido&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;votos&quot;</span>, <span class="at">values_drop_na =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-5"><a href></a></span>
+<span id="cb4-6"><a href></a>eleccion_tidy <span class="sc">|&gt;</span> <span class="fu">distinct</span>(codigo_distrito_electoral) <span class="co">#Sólo está el 0</span></span>
+<span id="cb4-7"><a href></a>eleccion_tidy <span class="sc">|&gt;</span> <span class="fu">distinct</span>(vuelta) <span class="co">#Sólo vuelta 1 </span></span>
+<span id="cb4-8"><a href></a>eleccion_tidy <span class="sc">|&gt;</span> <span class="fu">distinct</span>(tipo_eleccion) <span class="co">#Sólo tipo 02 --&gt; nacionales</span></span>
+<span id="cb4-9"><a href></a>eleccion_tidy <span class="sc">|&gt;</span> <span class="fu">distinct</span>(anno, mes) <span class="co">#Hubo 6 elecciones : 2008,2011,2015,2016,2019 (abril) y 2019 (noviembre)</span></span>
+<span id="cb4-10"><a href></a></span>
+<span id="cb4-11"><a href></a><span class="co">#Depuración nombres de partidos</span></span>
+<span id="cb4-12"><a href></a></span>
+<span id="cb4-13"><a href></a>nombres_partidos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;</span>,<span class="st">&quot;PARTIDO POPULAR&quot;</span>, <span class="st">&quot;CIUDADANOS&quot;</span>, <span class="st">&quot;PARTIDO NACIONALISTA VASCO&quot;</span>, <span class="st">&quot;BLOQUE NACIONALISTA GALLEGO&quot;</span>, <span class="st">&quot;UNIDAS PODEMOS - IU&quot;</span>, <span class="st">&quot;ESQUERRA REPUBLICANA DE CATALUNYA&quot;</span>,  <span class="st">&quot;EH - BILDU&quot;</span>, <span class="st">&quot;VOX&quot;</span>)</span>
+<span id="cb4-14"><a href></a></span>
+<span id="cb4-15"><a href></a>cambia_nombres <span class="ot">&lt;-</span> <span class="cf">function</span>(partido, nombres) {</span>
+<span id="cb4-16"><a href></a>  partido_min <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(partido)</span>
+<span id="cb4-17"><a href></a>  nombres_min <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(nombres)</span>
+<span id="cb4-18"><a href></a>  </span>
+<span id="cb4-19"><a href></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min, <span class="fu">c</span>(<span class="st">&quot;sortu|eusko alkartasuna|aralar|alternatiba|euskal herria bildu&quot;</span>))) { <span class="co">#Añado el nombre completo de EH - Bildu y cambio a str_detect porque antes no captaba todo lo que debía (ej 2008, Victoria-Gasteiz EZKER BATUA-BERDEAK-ALTERNATIVA)</span></span>
+<span id="cb4-20"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;EH - BILDU&quot;</span>)</span>
+<span id="cb4-21"><a href></a>  }</span>
+<span id="cb4-22"><a href></a>  </span>
+<span id="cb4-23"><a href></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min, <span class="fu">c</span>(<span class="st">&quot;unidas podemos|unidos podemos|podemos|iu|podem|ezker batua&quot;</span>))) {</span>
+<span id="cb4-24"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;UNIDAS PODEMOS - IU&quot;</span>)</span>
+<span id="cb4-25"><a href></a>  }</span>
+<span id="cb4-26"><a href></a>  </span>
+<span id="cb4-27"><a href></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min,<span class="st">&quot;vasc&quot;</span>)) {</span>
+<span id="cb4-28"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;PARTIDO NACIONALISTA VASCO&quot;</span>)</span>
+<span id="cb4-29"><a href></a>  }</span>
+<span id="cb4-30"><a href></a>  </span>
+<span id="cb4-31"><a href></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min,<span class="fu">c</span>(<span class="st">&quot;psoe|partido socialista obrero español&quot;</span>))) {</span>
+<span id="cb4-32"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;</span>)</span>
+<span id="cb4-33"><a href></a>  }</span>
+<span id="cb4-34"><a href></a>  </span>
+<span id="cb4-35"><a href></a>    <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min,<span class="fu">c</span>(<span class="st">&quot;pp|partido popular&quot;</span>))) {</span>
+<span id="cb4-36"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;PARTIDO POPULAR&quot;</span>)</span>
+<span id="cb4-37"><a href></a>    }</span>
+<span id="cb4-38"><a href></a>  </span>
+<span id="cb4-39"><a href></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min,<span class="fu">c</span>(<span class="st">&quot;bloque nacionalista galego&quot;</span>))) {</span>
+<span id="cb4-40"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;BLOQUE NACIONALISTA GALLEGO&quot;</span>)  </span>
+<span id="cb4-41"><a href></a>  }</span>
+<span id="cb4-42"><a href></a>  </span>
+<span id="cb4-43"><a href></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min,<span class="fu">c</span>(<span class="st">&quot;partido de la ciudadania&quot;</span>))) {</span>
+<span id="cb4-44"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;CIUDADANOS&quot;</span>)  </span>
+<span id="cb4-45"><a href></a>  }</span>
+<span id="cb4-46"><a href></a>  </span>
+<span id="cb4-47"><a href></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min,<span class="fu">c</span>(<span class="st">&quot;esquerra republicana de catalunya&quot;</span>))) { <span class="co">#Nótese que quedan aún partidos tipo coalición (considero que deberían incluirse)</span></span>
+<span id="cb4-48"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;ESQUERRA REPUBLICANA DE CATALUNYA&quot;</span>)  </span>
+<span id="cb4-49"><a href></a>  }</span>
+<span id="cb4-50"><a href></a>  </span>
+<span id="cb4-51"><a href></a>  <span class="cf">if</span> (<span class="fu">any</span>(partido_min <span class="sc">==</span> nombres_min)) {</span>
+<span id="cb4-52"><a href></a>    <span class="fu">return</span>(partido)  </span>
+<span id="cb4-53"><a href></a>  }</span>
+<span id="cb4-54"><a href></a>  </span>
+<span id="cb4-55"><a href></a>  <span class="fu">return</span>(<span class="st">&quot;OTRO&quot;</span>)</span>
+<span id="cb4-56"><a href></a>}</span>
+<span id="cb4-57"><a href></a></span>
+<span id="cb4-58"><a href></a><span class="fu">cambia_nombres</span>(<span class="st">&quot;PARTIT POPULAR-PARTIDO POPULAR&quot;</span>, nombres_partidos) <span class="co">#ejemplo</span></span>
+<span id="cb4-59"><a href></a></span>
+<span id="cb4-60"><a href></a><span class="co">#Aplicar función al dataframe</span></span>
+<span id="cb4-61"><a href></a>eleccion_tidy_filt <span class="ot">&lt;-</span> eleccion_tidy <span class="sc">|&gt;</span> <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">partido_n =</span> <span class="fu">cambia_nombres</span>(partido, nombres_partidos))</span>
+<span id="cb4-62"><a href></a></span>
+<span id="cb4-63"><a href></a><span class="co">#Reagrupar partido &quot;otro&quot;</span></span>
+<span id="cb4-64"><a href></a>eleccion_resumen <span class="ot">&lt;-</span> eleccion_tidy_filt <span class="sc">|&gt;</span></span>
+<span id="cb4-65"><a href></a>  <span class="fu">group_by</span>(partido_n,anno,mes,codigo_ccaa,codigo_provincia,codigo_municipio,codigo_distrito_electoral) <span class="sc">|&gt;</span> </span>
+<span id="cb4-66"><a href></a>  <span class="fu">mutate</span>(<span class="at">votos_totales_partido =</span> <span class="fu">sum</span>(votos)) <span class="sc">|&gt;</span> </span>
+<span id="cb4-67"><a href></a>  <span class="fu">ungroup</span>() <span class="co"># Ver anotaciones del cambio</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href></a><span class="co">#Convertir a tidy data</span></span>
-<span id="cb6-2"><a href></a>eleccion_tidy <span class="ot">&lt;-</span> election_data <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="dv">16</span><span class="sc">:</span><span class="dv">471</span>), <span class="at">names_to =</span> <span class="st">&quot;partido&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;votos&quot;</span>, <span class="at">values_drop_na =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-3"><a href></a></span>
-<span id="cb6-4"><a href></a>eleccion_tidy <span class="sc">|&gt;</span> <span class="fu">distinct</span>(anno) <span class="co">#Elecciones 2008,2011,2015,2016,2019</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 1
-   anno
-  &lt;dbl&gt;
-1  2008
-2  2011
-3  2015
-4  2016
-5  2019</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href></a><span class="co">#Depuración nombres de partidos</span></span>
-<span id="cb8-2"><a href></a></span>
-<span id="cb8-3"><a href></a>nombres_partidos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;</span>,<span class="st">&quot;PARTIDO POPULAR&quot;</span>, <span class="st">&quot;CIUDADANOS&quot;</span>, <span class="st">&quot;PARTIDO NACIONALISTA VASCO&quot;</span>, <span class="st">&quot;BLOQUE NACIONALISTA GALLEGO&quot;</span>, <span class="st">&quot;UNIDAS PODEMOS - IU&quot;</span>, <span class="st">&quot;ESQUERRA REPUBLICANA DE CATALUNYA&quot;</span>,  <span class="st">&quot;EH - BILDU&quot;</span>, <span class="st">&quot;VOX&quot;</span>)</span>
-<span id="cb8-4"><a href></a></span>
-<span id="cb8-5"><a href></a>cambia_nombres <span class="ot">&lt;-</span> <span class="cf">function</span>(partido, nombres) {</span>
-<span id="cb8-6"><a href></a>  partido_min <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(partido)</span>
-<span id="cb8-7"><a href></a>  nombres_min <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(nombres)</span>
-<span id="cb8-8"><a href></a>  <span class="cf">if</span> (partido_min <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;sortu&quot;</span>, <span class="st">&quot;eusko alkartasuna&quot;</span>, <span class="st">&quot;aralar&quot;</span>, <span class="st">&quot;alternatiba&quot;</span>)) {</span>
-<span id="cb8-9"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;EH - BILDU&quot;</span>)</span>
-<span id="cb8-10"><a href></a>  }</span>
-<span id="cb8-11"><a href></a>  <span class="cf">if</span> (partido_min <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;unidas podemos&quot;</span>, <span class="st">&quot;unidos podemos&quot;</span>, <span class="st">&quot;podemos&quot;</span>, <span class="st">&quot;iu&quot;</span>, <span class="st">&quot;podem&quot;</span>, <span class="st">&quot;ezker batua&quot;</span>)) {</span>
-<span id="cb8-12"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;UNIDAS PODEMOS - IU&quot;</span>)</span>
-<span id="cb8-13"><a href></a>  }</span>
-<span id="cb8-14"><a href></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min,<span class="st">&quot;vasc&quot;</span>)) {</span>
-<span id="cb8-15"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;PARTIDO NACIONALISTA VASCO&quot;</span>)</span>
-<span id="cb8-16"><a href></a>  }</span>
-<span id="cb8-17"><a href></a>  <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min,<span class="fu">c</span>(<span class="st">&quot;psoe|partido socialista obrero español&quot;</span>))) {</span>
-<span id="cb8-18"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;</span>)</span>
-<span id="cb8-19"><a href></a>  }</span>
-<span id="cb8-20"><a href></a>    <span class="cf">if</span> (<span class="fu">str_detect</span>(partido_min,<span class="fu">c</span>(<span class="st">&quot;pp|partido popular&quot;</span>))) {</span>
-<span id="cb8-21"><a href></a>    <span class="fu">return</span>(<span class="st">&quot;PARTIDO POPULAR&quot;</span>)</span>
-<span id="cb8-22"><a href></a>  }</span>
-<span id="cb8-23"><a href></a>  <span class="cf">if</span> (<span class="fu">any</span>(partido_min <span class="sc">==</span> nombres_min)) {</span>
-<span id="cb8-24"><a href></a>    <span class="fu">return</span>(partido)  </span>
-<span id="cb8-25"><a href></a>  }</span>
-<span id="cb8-26"><a href></a>  <span class="fu">return</span>(<span class="st">&quot;OTRO&quot;</span>)</span>
-<span id="cb8-27"><a href></a>}</span>
-<span id="cb8-28"><a href></a></span>
-<span id="cb8-29"><a href></a><span class="fu">cambia_nombres</span>(<span class="st">&quot;PARTIT POPULAR-PARTIDO POPULAR&quot;</span>, nombres_partidos) <span class="co">#ejemplo</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] &quot;PARTIDO POPULAR&quot;</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href></a>nombres <span class="ot">&lt;-</span> election_data <span class="sc">|&gt;</span> <span class="fu">select</span> (<span class="dv">16</span><span class="sc">:</span><span class="dv">471</span>) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
-<span id="cb10-2"><a href></a></span>
-<span id="cb10-3"><a href></a><span class="co">#PROBLEMAS CON ESTOS PARTIDOS: </span></span>
-<span id="cb10-4"><a href></a>  <span class="co"># CIUDADANOS</span></span>
-<span id="cb10-5"><a href></a>election_data <span class="sc">|&gt;</span> <span class="fu">select</span> (<span class="fu">contains</span>(<span class="st">&quot;CIUDADA&quot;</span>)) <span class="sc">|&gt;</span> <span class="fu">names</span>() <span class="co">#Son el mismo partido?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] &quot;CIUDADANOS-PARTIDO DE LA CIUDADANIA&quot;                    
- [2] &quot;CIUDADANOS EN BLANCO&quot;                                   
- [3] &quot;CIUDADANOS PARTIDO DE LA CIUDADANIA&quot;                    
- [4] &quot;CIUTADANS-PARTIDO DE LA CIUDADANIA&quot;                     
- [5] &quot;AGRUPACION CIUDADANA&quot;                                   
- [6] &quot;INICIATIVA CIUDADANA BURGALESA&quot;                         
- [7] &quot;PARTIDO CIUDADANOS UNIDOS DE ARAGON&quot;                    
- [8] &quot;UNION CIUDADANA PROGRESISTAS INDEPENDIENTES DE CANARIAS&quot;
- [9] &quot;CIUDADANOS DE CENTRO DEMOCRÁTICO&quot;                       
-[10] &quot;FORO DE CIUDADANOS&quot;                                     
-[11] &quot;ACCION CIUDADANA POR MALAGA&quot;                            
-[12] &quot;UNION DE CIUDADANOS INDEPENDIENTES DE TOLEDO&quot;           
-[13] &quot;CIUDADANOS-PARTIDO DE LA CIUDADANÍA&quot;                    
-[14] &quot;CIUDADANOS PARTIDO DE LA CIUDADANÍA&quot;                    
-[15] &quot;CIUTADANS-PARTIDO DE LA CIUDADANÍA&quot;                     
-[16] &quot;CIUTADANS - PARTIDO DE LA CIUDADANÍA&quot;                   
-[17] &quot;CIUDADANOS-PARTIDO DE LA CIUDADANÍA (C&#39;s)&quot;              
-[18] &quot;CIUDADANOS, PARTIDO DE LA CIUDADANÍA&quot;                   
-[19] &quot;CIUDADANOS LIBRES UNIDOS&quot;                               
-[20] &quot;CIUDADANOS RURALES AGRUPADOS&quot;                           
-[21] &quot;JUSTIZIA SOCIAL, PARTICIPACIÓN CIUDADANA&quot;               
-[22] &quot;CIUTADANS, PARTIDO DE LA CIUDADANÍA&quot;                    
-[23] &quot;CIUDADANOS DE CENTRO DEMOCRÁTICO-CANDIDATURA INDEP&quot;     
-[24] &quot;CIUDADANOS INDEPENDIENTES DE LINARES UNIDOS&quot;            
-[25] &quot;MOVIMIENTO POR LA DIGNIDAD Y LA CIUDADANÍA DE CEUT&quot;     </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href></a>  <span class="co"># BLOQUE NACIONALISTA GALLEGO. </span></span>
-<span id="cb12-2"><a href></a>election_data <span class="sc">|&gt;</span> <span class="fu">select</span> (<span class="fu">contains</span>(<span class="st">&quot;gal&quot;</span>)) <span class="sc">|&gt;</span> <span class="fu">names</span>() <span class="co">#Son todos el mismo partido?? </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] &quot;INICIATIVA CIUDADANA BURGALESA&quot;                                        
- [2] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA-PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;  
- [3] &quot;BLOQUE NACIONALISTA GALEGO&quot;                                            
- [4] &quot;PARTIDO COMUNISTA DO POVO GALEGO&quot;                                      
- [5] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA-PSOE&quot;                               
- [6] &quot;PARTIDO COMUNISTA DO POBO GALEGO&quot;                                      
- [7] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA - PSOE&quot;                             
- [8] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA - PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;
- [9] &quot;COMUNISTAS DA GALIZA&quot;                                                  
-[10] &quot;NÓS-CANDIDATURA GALEGA (BNG-CG-FOGA-PCPG-PG)&quot;                          
-[11] &quot;COMUNISTAS DA GALIZA-PCPE&quot;                                             
-[12] &quot;BNG-NÓS CANDIDATURA GALEGA&quot;                                            
-[13] &quot;PARTIDO COMUNISTA DOS TRABALLADORES DE GALIZA&quot;                         
-[14] &quot;COMPROMISO POR GALICIA&quot;                                                
-[15] &quot;PARTIDO DOS SOCIALISTAS DE GALICIA-PARTIDO SOCIALI&quot;                    </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href></a><span class="co">#Aplicar función al dataframe</span></span>
-<span id="cb14-2"><a href></a>eleccion_tidy <span class="ot">&lt;-</span> eleccion_tidy <span class="sc">|&gt;</span> <span class="fu">rowwise</span>() <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">partido_n =</span> <span class="fu">cambia_nombres</span>(partido, nombres_partidos))</span>
-<span id="cb14-3"><a href></a></span>
-<span id="cb14-4"><a href></a><span class="co">#Reagrupar partido &quot;otro&quot;</span></span>
-<span id="cb14-5"><a href></a></span>
-<span id="cb14-6"><a href></a>eleccion_tidy <span class="ot">&lt;-</span> eleccion_tidy <span class="sc">|&gt;</span> </span>
-<span id="cb14-7"><a href></a>  <span class="fu">select</span>(<span class="sc">-</span>partido) <span class="sc">|&gt;</span> </span>
-<span id="cb14-8"><a href></a>  <span class="fu">group_by</span>(partido_n,tipo_eleccion,anno,mes,vuelta,codigo_ccaa,codigo_provincia,codigo_municipio,codigo_distrito_electoral) <span class="sc">|&gt;</span> </span>
-<span id="cb14-9"><a href></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">c</span>(numero_mesas<span class="sc">:</span>votos),sum)) <span class="sc">|&gt;</span> </span>
-<span id="cb14-10"><a href></a>  <span class="fu">ungroup</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href></a><span class="co">#write_csv(eleccion_resumen, file = &quot;eleccion_resumen.csv&quot;) #Tarda un montón en cargar</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="encuestas" class="slide level2">
@@ -1907,55 +1397,147 @@ Eli, Jazmín, Flor, Shengnan, Mariajo
 -   tamaño muestral desconocido o inferior a 500.
 -   tenga 1 día o menos de trabajo de campo.</code></pre>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href></a><span class="fu">head</span>(surveys)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 59
-  type_survey date_elec  id_pollster pollster media    field_date_from
-  &lt;chr&gt;       &lt;date&gt;     &lt;chr&gt;       &lt;chr&gt;    &lt;chr&gt;    &lt;date&gt;         
-1 national    1982-10-28 pollster-1  PSOE     &lt;NA&gt;     1982-10-28     
-2 national    1982-10-28 pollster-2  IDEAL    &lt;NA&gt;     1982-10-28     
-3 national    1982-10-28 pollster-3  SOFEMASA EL PAÍS  1982-10-16     
-4 national    1982-10-28 pollster-4  GRUPO 16 GRUPO 16 1982-10-09     
-5 national    1982-10-28 pollster-3  SOFEMASA EL PAÍS  1982-10-01     
-6 national    1982-10-28 pollster-4  GRUPO 16 GRUPO 16 1982-09-25     
-# ℹ 53 more variables: field_date_to &lt;date&gt;, exit_poll &lt;lgl&gt;, size &lt;dbl&gt;,
-#   turnout &lt;dbl&gt;, UCD &lt;dbl&gt;, PSOE &lt;dbl&gt;, PCE &lt;dbl&gt;, AP &lt;dbl&gt;, CIU &lt;dbl&gt;,
-#   PA &lt;dbl&gt;, `EAJ-PNV` &lt;dbl&gt;, HB &lt;dbl&gt;, ERC &lt;dbl&gt;, EE &lt;dbl&gt;, CDS &lt;dbl&gt;,
-#   FN &lt;dbl&gt;, PAD &lt;dbl&gt;, PRD &lt;dbl&gt;, MUC &lt;dbl&gt;, IU &lt;dbl&gt;, CG &lt;dbl&gt;, PAR &lt;dbl&gt;,
-#   AIC &lt;dbl&gt;, UV &lt;dbl&gt;, EA &lt;dbl&gt;, PP &lt;dbl&gt;, LV &lt;dbl&gt;, ARM &lt;dbl&gt;, PDP &lt;dbl&gt;,
-#   CC &lt;dbl&gt;, PAP &lt;dbl&gt;, BNG &lt;dbl&gt;, ICV &lt;dbl&gt;, EH &lt;dbl&gt;, UPYD &lt;dbl&gt;,
-#   AMAIUR &lt;dbl&gt;, CS &lt;dbl&gt;, `DIL-CDC` &lt;dbl&gt;, `EH-BILDU` &lt;dbl&gt;, UP &lt;dbl&gt;, …</code></pre>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href></a><span class="fu">head</span>(surveys)</span>
+<span id="cb7-2"><a href></a><span class="fu">names</span>(surveys)</span>
+<span id="cb7-3"><a href></a></span>
+<span id="cb7-4"><a href></a>surveys_tidy <span class="ot">&lt;-</span> surveys <span class="sc">|&gt;</span> </span>
+<span id="cb7-5"><a href></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="dv">11</span><span class="sc">:</span><span class="dv">59</span>), <span class="at">names_to =</span> <span class="st">&quot;partidos&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;intencion_voto&quot;</span>, <span class="at">values_drop_na =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href></a>  <span class="fu">drop_na</span>(size) <span class="sc">|&gt;</span>  </span>
+<span id="cb7-7"><a href></a>  <span class="fu">filter</span>(size <span class="sc">&gt;=</span><span class="dv">500</span>) <span class="sc">|&gt;</span>   <span class="co">#tamaño muestral</span></span>
+<span id="cb7-8"><a href></a>  <span class="fu">filter</span>(date_elec <span class="sc">&gt;=</span> <span class="st">&quot;2008-01-01&quot;</span>) <span class="sc">|&gt;</span>  <span class="co">#elecciones desde 2008</span></span>
+<span id="cb7-9"><a href></a>  <span class="fu">mutate</span>(<span class="at">duracion_t_campo =</span> field_date_to <span class="sc">-</span> field_date_from) <span class="sc">|&gt;</span> </span>
+<span id="cb7-10"><a href></a>  <span class="fu">filter</span>(duracion_t_campo <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> <span class="co">#descartar enucentas con 1 días o menos de trabajo de campo</span></span>
+<span id="cb7-11"><a href></a>  <span class="fu">filter</span>(exit_poll <span class="sc">==</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-12"><a href></a>  <span class="fu">select</span>(<span class="sc">-</span>exit_poll) <span class="co">#quitar var. a pie de urna porque no es informativa (sólo quedan las que no lo)</span></span>
+<span id="cb7-13"><a href></a></span>
+<span id="cb7-14"><a href></a><span class="co"># names(surveys_tidy) &lt;- c(&quot;tipo_encuesta&quot;, &quot;fecha_elecciones&quot;, &quot;id_entrevistador&quot;, &quot;entrevistador&quot;, &quot;media&quot;,</span></span>
+<span id="cb7-15"><a href></a><span class="co">#                          &quot;inicio_trabajo&quot;, &quot;final_trabajo&quot;, &quot;pie_urna&quot;, &quot;n&quot;, &quot;participacion_estimada&quot;,</span></span>
+<span id="cb7-16"><a href></a><span class="co">#                          &quot;intencion_voto&quot;, &quot;duracion_t_campo&quot;)</span></span>
+<span id="cb7-17"><a href></a><span class="co"># Por si resulta útil/cómodo más adelante</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href></a><span class="fu">names</span>(surveys)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code> [1] &quot;type_survey&quot;     &quot;date_elec&quot;       &quot;id_pollster&quot;     &quot;pollster&quot;       
- [5] &quot;media&quot;           &quot;field_date_from&quot; &quot;field_date_to&quot;   &quot;exit_poll&quot;      
- [9] &quot;size&quot;            &quot;turnout&quot;         &quot;UCD&quot;             &quot;PSOE&quot;           
-[13] &quot;PCE&quot;             &quot;AP&quot;              &quot;CIU&quot;             &quot;PA&quot;             
-[17] &quot;EAJ-PNV&quot;         &quot;HB&quot;              &quot;ERC&quot;             &quot;EE&quot;             
-[21] &quot;CDS&quot;             &quot;FN&quot;              &quot;PAD&quot;             &quot;PRD&quot;            
-[25] &quot;MUC&quot;             &quot;IU&quot;              &quot;CG&quot;              &quot;PAR&quot;            
-[29] &quot;AIC&quot;             &quot;UV&quot;              &quot;EA&quot;              &quot;PP&quot;             
-[33] &quot;LV&quot;              &quot;ARM&quot;             &quot;PDP&quot;             &quot;CC&quot;             
-[37] &quot;PAP&quot;             &quot;BNG&quot;             &quot;ICV&quot;             &quot;EH&quot;             
-[41] &quot;UPYD&quot;            &quot;AMAIUR&quot;          &quot;CS&quot;              &quot;DIL-CDC&quot;        
-[45] &quot;EH-BILDU&quot;        &quot;UP&quot;              &quot;PACMA&quot;           &quot;PODEMOS&quot;        
-[49] &quot;COMPROMIS&quot;       &quot;VOX&quot;             &quot;JXCAT-JUNTS&quot;     &quot;NA-SUMA&quot;        
-[53] &quot;PDECAT&quot;          &quot;CC-NC&quot;           &quot;PRC&quot;             &quot;MP&quot;             
-[57] &quot;CUP&quot;             &quot;TE&quot;              &quot;EV&quot;             </code></pre>
+</section>
+<section class="slide level2">
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href></a><span class="co"># Tabla maestra que contiene nombres de municipios, sus códigos y las siglas de cada partido (para facilitar la visualización)</span></span>
+<span id="cb8-2"><a href></a></span>
+<span id="cb8-3"><a href></a>tabla_maestra <span class="ot">&lt;-</span></span>
+<span id="cb8-4"><a href></a>  eleccion_resumen <span class="sc">|&gt;</span> </span>
+<span id="cb8-5"><a href></a>  <span class="fu">unite</span>(<span class="at">col =</span> <span class="st">&quot;cod_poblacion&quot;</span>, codigo_ccaa, codigo_provincia, codigo_municipio, <span class="at">sep =</span> <span class="st">&quot;-&quot;</span>, <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-6"><a href></a>  <span class="fu">left_join</span>(cod_mun, <span class="at">by =</span>  <span class="fu">c</span>(<span class="st">&quot;cod_poblacion&quot;</span> <span class="ot">=</span> <span class="st">&quot;cod_mun&quot;</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb8-7"><a href></a>  <span class="fu">mutate</span>(<span class="at">siglas =</span> <span class="fu">case_when</span>(</span>
+<span id="cb8-8"><a href></a>    </span>
+<span id="cb8-9"><a href></a>    partido_n <span class="sc">==</span> <span class="st">&quot;PARTIDO SOCIALISTA OBRERO ESPAÑOL&quot;</span> <span class="sc">~</span> <span class="st">&quot;PSOE&quot;</span>,</span>
+<span id="cb8-10"><a href></a>    </span>
+<span id="cb8-11"><a href></a>    partido_n <span class="sc">==</span> <span class="st">&quot;PARTIDO POPULAR&quot;</span> <span class="sc">~</span> <span class="st">&quot;PP&quot;</span>,</span>
+<span id="cb8-12"><a href></a>    </span>
+<span id="cb8-13"><a href></a>    partido_n <span class="sc">==</span> <span class="st">&quot;CIUDADANOS&quot;</span> <span class="sc">~</span> <span class="st">&quot;C&#39;s&quot;</span>,</span>
+<span id="cb8-14"><a href></a>    </span>
+<span id="cb8-15"><a href></a>    partido_n <span class="sc">==</span> <span class="st">&quot;BLOQUE NACIONALISTA GALLEGO&quot;</span> <span class="sc">~</span> <span class="st">&quot;BNG&quot;</span>,</span>
+<span id="cb8-16"><a href></a>    </span>
+<span id="cb8-17"><a href></a>    partido_n <span class="sc">==</span> <span class="st">&quot;ESQUERRA REPUBLICANA DE CATALUNYA&quot;</span> <span class="sc">~</span> <span class="st">&quot;ERC&quot;</span>,</span>
+<span id="cb8-18"><a href></a>    </span>
+<span id="cb8-19"><a href></a>    partido_n <span class="sc">==</span> <span class="st">&quot;UNIDAS PODEMOS - IU&quot;</span> <span class="sc">~</span> <span class="st">&quot;PODEMOS-IU&quot;</span>,</span>
+<span id="cb8-20"><a href></a>    </span>
+<span id="cb8-21"><a href></a>    partido_n <span class="sc">==</span> <span class="st">&quot;EH - BILDU&quot;</span> <span class="sc">~</span> <span class="st">&quot;EH-BILDU&quot;</span>,</span>
+<span id="cb8-22"><a href></a>    </span>
+<span id="cb8-23"><a href></a>    partido_n <span class="sc">==</span> <span class="st">&quot;PARTIDO NACIONALISTA VASCO&quot;</span> <span class="sc">~</span> <span class="st">&quot;PNV&quot;</span>,</span>
+<span id="cb8-24"><a href></a>    </span>
+<span id="cb8-25"><a href></a>    partido_n <span class="sc">==</span> <span class="st">&quot;VOX&quot;</span> <span class="sc">~</span> <span class="st">&quot;VOX&quot;</span>,</span>
+<span id="cb8-26"><a href></a>    </span>
+<span id="cb8-27"><a href></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">&quot;OTRO&quot;</span> ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href></a>surveys_tidy <span class="ot">&lt;-</span> surveys <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(<span class="dv">11</span><span class="sc">:</span><span class="dv">59</span>), <span class="at">names_to =</span> <span class="st">&quot;partidos&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;intencion_voto&quot;</span>, <span class="at">values_drop_na =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb20-2"><a href></a></span>
-<span id="cb20-3"><a href></a>surveys_tidy <span class="ot">&lt;-</span> surveys_tidy <span class="sc">|&gt;</span> <span class="fu">drop_na</span>(size) <span class="sc">|&gt;</span>  <span class="fu">filter</span>(size <span class="sc">&gt;=</span><span class="dv">500</span>)   <span class="co">#tamaño muestral</span></span>
-<span id="cb20-4"><a href></a></span>
-<span id="cb20-5"><a href></a>surveys_tidy <span class="ot">&lt;-</span> surveys_tidy <span class="sc">|&gt;</span> <span class="fu">filter</span>(date_elec <span class="sc">&gt;=</span> <span class="st">&quot;2008-01-01&quot;</span>)   <span class="co">#elecciones desde 2008</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section class="slide level2">
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href></a>datos_p1 <span class="ot">&lt;-</span> tabla_maestra <span class="sc">|&gt;</span> <span class="co">#Una fila por municipio</span></span>
+<span id="cb9-2"><a href></a>  <span class="fu">filter</span>(censo <span class="sc">&gt;</span> <span class="dv">100000</span>) <span class="sc">|&gt;</span> <span class="co">#Condición del censo</span></span>
+<span id="cb9-3"><a href></a>  <span class="fu">slice_max</span>(votos_totales_partido, <span class="at">by =</span> <span class="fu">c</span>(anno, mes, cod_poblacion)) <span class="sc">|&gt;</span> <span class="co">#Partido más votado por elección</span></span>
+<span id="cb9-4"><a href></a>  <span class="fu">distinct</span>(anno, mes, municipio, cod_poblacion, siglas) <span class="sc">|&gt;</span>  <span class="co">#Quito filas repetidas (partidos resultantes de la agrupación)</span></span>
+<span id="cb9-5"><a href></a>  <span class="fu">group_by</span>(anno, mes) <span class="sc">|&gt;</span> </span>
+<span id="cb9-6"><a href></a>  <span class="fu">count</span>(siglas) <span class="sc">|&gt;</span> <span class="co">#Por elección cuento nº de veces qeu aparece el partido como más votado (=nº de municipios donde ganó) </span></span>
+<span id="cb9-7"><a href></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb9-8"><a href></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-9"><a href></a>    <span class="at">siglas =</span> <span class="fu">factor</span>(siglas, <span class="at">levels =</span> <span class="fu">unique</span>(siglas)), <span class="co"># Aseguramos el orden</span></span>
+<span id="cb9-10"><a href></a>    <span class="at">eleccion =</span> <span class="fu">case_when</span>(</span>
+<span id="cb9-11"><a href></a>      anno <span class="sc">==</span> <span class="dv">2008</span> <span class="sc">~</span> <span class="st">&quot;2008&quot;</span>,</span>
+<span id="cb9-12"><a href></a>      anno <span class="sc">==</span> <span class="dv">2011</span> <span class="sc">~</span> <span class="st">&quot;2011&quot;</span>,</span>
+<span id="cb9-13"><a href></a>      anno <span class="sc">==</span> <span class="dv">2015</span> <span class="sc">~</span> <span class="st">&quot;2015&quot;</span>,</span>
+<span id="cb9-14"><a href></a>      anno <span class="sc">==</span> <span class="dv">2016</span> <span class="sc">~</span> <span class="st">&quot;2016&quot;</span>,</span>
+<span id="cb9-15"><a href></a>      anno <span class="sc">==</span> <span class="dv">2019</span> <span class="sc">&amp;</span> mes <span class="sc">==</span> <span class="st">&quot;04&quot;</span> <span class="sc">~</span> </span>
+<span id="cb9-16"><a href></a>      <span class="st">&quot;2019 (abril)&quot;</span>,</span>
+<span id="cb9-17"><a href></a>      anno <span class="sc">==</span> <span class="dv">2019</span> <span class="sc">&amp;</span> mes <span class="sc">==</span> <span class="st">&quot;11&quot;</span> <span class="sc">~</span> </span>
+<span id="cb9-18"><a href></a>        <span class="st">&quot;2019 (noviembre)&quot;</span></span>
+<span id="cb9-19"><a href></a>    )</span>
+<span id="cb9-20"><a href></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section class="slide level2">
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href></a><span class="co">#Algunas comprobaciones</span></span>
+<span id="cb10-2"><a href></a>tabla_maestra <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a href></a>  <span class="fu">filter</span>(censo <span class="sc">&gt;</span> <span class="dv">100000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a href></a>  <span class="fu">slice_max</span>(votos_totales_partido, <span class="at">by =</span> <span class="fu">c</span>(anno, mes, cod_poblacion)) <span class="sc">|&gt;</span> </span>
+<span id="cb10-5"><a href></a>  <span class="fu">distinct</span>(anno, mes, municipio, cod_poblacion, partido_n, votos_totales_partido, votos_candidaturas) <span class="sc">|&gt;</span> </span>
+<span id="cb10-6"><a href></a>  <span class="fu">count</span>(municipio, cod_poblacion) <span class="sc">|&gt;</span> </span>
+<span id="cb10-7"><a href></a>  <span class="fu">arrange</span>(n)  <span class="co">#Hay dos municipios que no participaron en todas las elecciones</span></span>
+<span id="cb10-8"><a href></a></span>
+<span id="cb10-9"><a href></a>tabla_maestra <span class="sc">|&gt;</span> </span>
+<span id="cb10-10"><a href></a>  <span class="fu">filter</span>(censo <span class="sc">&gt;</span> <span class="dv">100000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-11"><a href></a>  <span class="fu">slice_max</span>(votos_totales_partido, <span class="at">by =</span> <span class="fu">c</span>(anno, mes, cod_poblacion)) <span class="sc">|&gt;</span> </span>
+<span id="cb10-12"><a href></a>  <span class="fu">distinct</span>(anno, mes, municipio, cod_poblacion, partido_n, votos_totales_partido, votos_candidaturas) <span class="sc">|&gt;</span> </span>
+<span id="cb10-13"><a href></a>  <span class="fu">filter</span>(cod_poblacion <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;01-11-012&quot;</span>, <span class="st">&quot;01-41-038&quot;</span>)) <span class="co">#Prece que Cádiz no estaba en 2016 ni las de 2019</span></span>
+<span id="cb10-14"><a href></a></span>
+<span id="cb10-15"><a href></a>tabla_maestra <span class="sc">|&gt;</span> </span>
+<span id="cb10-16"><a href></a>  <span class="fu">filter</span>(municipio <span class="sc">==</span> <span class="st">&quot;Cádiz&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-17"><a href></a>  <span class="fu">select</span>(censo, anno, mes) <span class="sc">|&gt;</span></span>
+<span id="cb10-18"><a href></a>  <span class="fu">filter</span>(censo <span class="sc">&lt;</span> <span class="dv">100000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-19"><a href></a>  <span class="fu">distinct</span>(anno, mes) <span class="co">#En efecto ocurre eso</span></span>
+<span id="cb10-20"><a href></a></span>
+<span id="cb10-21"><a href></a>tabla_maestra <span class="sc">|&gt;</span> </span>
+<span id="cb10-22"><a href></a>  <span class="fu">filter</span>(municipio <span class="sc">==</span> <span class="st">&quot;Dos Hermanas&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-23"><a href></a>  <span class="fu">select</span>(censo, anno, mes) <span class="sc">|&gt;</span></span>
+<span id="cb10-24"><a href></a>  <span class="fu">filter</span>(censo <span class="sc">&lt;</span> <span class="dv">100000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-25"><a href></a>  <span class="fu">distinct</span>(anno, mes) <span class="co">#Aquí no llegaban en 2008, 2011 ni 2015</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section>
+<section id="primera-pregunta" class="title-slide slide level1 center">
+<h1>Primera pregunta</h1>
+<p>¿Qué partido fue el ganador en los municipios con más de 100.000 habitantes (censo) en cada una de las elecciones?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href></a>colores_partidos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;OTRO&quot;</span> <span class="ot">=</span> <span class="st">&quot;grey45&quot;</span>, <span class="st">&quot;PP&quot;</span> <span class="ot">=</span> <span class="st">&quot;#17589d&quot;</span>, <span class="st">&quot;PNV&quot;</span> <span class="ot">=</span> <span class="st">&quot;#308444&quot;</span>, </span>
+<span id="cb11-2"><a href></a>                      <span class="st">&quot;PODEMOS-IU&quot;</span> <span class="ot">=</span> <span class="st">&quot;#6b1f5f&quot;</span>, <span class="st">&quot;VOX&quot;</span> <span class="ot">=</span> <span class="st">&quot;#5ac035&quot;</span>, </span>
+<span id="cb11-3"><a href></a>                      <span class="st">&quot;PSOE&quot;</span> <span class="ot">=</span> <span class="st">&quot;#c20e1a&quot;</span>, <span class="st">&quot;ERC&quot;</span> <span class="ot">=</span> <span class="st">&quot;#fcc34e&quot;</span>, <span class="st">&quot;BNG&quot;</span> <span class="ot">=</span> <span class="st">&quot;#76b3dd&quot;</span>,</span>
+<span id="cb11-4"><a href></a>                      <span class="st">&quot;C&#39;s&quot;</span> <span class="ot">=</span> <span class="st">&quot;#fb5000&quot;</span>)</span>
+<span id="cb11-5"><a href></a></span>
+<span id="cb11-6"><a href></a><span class="fu">ggplot</span>(datos_p1, <span class="fu">aes</span>(<span class="at">fill =</span> siglas, <span class="at">values =</span> n)) <span class="sc">+</span></span>
+<span id="cb11-7"><a href></a>  <span class="fu">geom_waffle</span>(<span class="at">n_rows =</span> <span class="dv">10</span>) <span class="sc">+</span></span>
+<span id="cb11-8"><a href></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span>eleccion) <span class="sc">+</span></span>
+<span id="cb11-9"><a href></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> colores_partidos) <span class="sc">+</span></span>
+<span id="cb11-10"><a href></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Partidos ganadores en municipios con &gt;100.000 habitantes&quot;</span>,</span>
+<span id="cb11-11"><a href></a>         <span class="at">fill =</span> <span class="st">&quot;Partido&quot;</span>) <span class="sc">+</span></span>
+<span id="cb11-12"><a href></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb11-13"><a href></a>  <span class="fu">theme</span>(</span>
+<span id="cb11-14"><a href></a>    <span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,</span>
+<span id="cb11-15"><a href></a>    <span class="at">axis.text =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb11-16"><a href></a>    <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>,</span>
+<span id="cb11-17"><a href></a>                              <span class="at">size =</span><span class="dv">9</span>),</span>
+<span id="cb11-18"><a href></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>,</span>
+<span id="cb11-19"><a href></a>                              <span class="at">hjust =</span> <span class="fl">0.5</span>,</span>
+<span id="cb11-20"><a href></a>                              <span class="at">margin =</span> <span class="fu">margin</span>(<span class="at">b =</span> <span class="dv">10</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section class="slide level2">
+
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
 </div>
 </div>
-</section>
+</section></section>
     </div>
   </div>
 

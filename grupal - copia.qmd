@@ -19,6 +19,7 @@ library(tidyverse)
 library(glue)
 library(forcats)
 library(lubridate)
+library(waffle)
 ```
 
 ---
@@ -120,9 +121,12 @@ En concreto, debes trabajar únicamente en el **período de tiempo que incluye l
 
 ---
 
-## 
+
+## Depuración de datos
 
 ```{r}
+#|eval: false
+
 names(election_data)
 
 #Convertir a tidy data
@@ -199,6 +203,9 @@ eleccion_resumen <- eleccion_tidy_filt |>
 ```
 
 
+---
+
+
 ## Encuestas
 
 Debes descartar las encuestas que:
@@ -209,7 +216,7 @@ Debes descartar las encuestas que:
     -   tenga 1 día o menos de trabajo de campo.
 
 ```{r}
-
+#| eval: false
 head(surveys)
 names(surveys)
 
@@ -232,8 +239,11 @@ surveys_tidy <- surveys |>
 ```
 
 
+---
+
 
 ```{r}
+#| eval: false
 
 # Tabla maestra que contiene nombres de municipios, sus códigos y las siglas de cada partido (para facilitar la visualización)
 
@@ -251,7 +261,7 @@ tabla_maestra <-
     
     partido_n == "BLOQUE NACIONALISTA GALLEGO" ~ "BNG",
     
-    partido_n == "ESQUERRA REPUBLICANA DE CATAUNYA" ~ "ERC",
+    partido_n == "ESQUERRA REPUBLICANA DE CATALUNYA" ~ "ERC",
     
     partido_n == "UNIDAS PODEMOS - IU" ~ "PODEMOS-IU",
     
@@ -267,22 +277,40 @@ tabla_maestra <-
 
 
 ---
-# Primera pregunta
 
-¿Qué partido fue el ganador en los municipios con más de 100.000 habitantes (censo) en cada una de las elecciones?
 
 ```{r}
+#| eval: false
 
-tabla_maestra |> 
-  filter(censo > 100000) |> 
-  slice_max(votos_totales_partido, by = c(anno, mes, cod_poblacion)) |> 
-  distinct(anno, mes, municipio, partido_n, votos_totales_partido, votos_candidaturas)
+datos_p1 <- tabla_maestra |> #Una fila por municipio
+  filter(censo > 100000) |> #Condición del censo
+  slice_max(votos_totales_partido, by = c(anno, mes, cod_poblacion)) |> #Partido más votado por elección
+  distinct(anno, mes, municipio, cod_poblacion, siglas) |>  #Quito filas repetidas (partidos resultantes de la agrupación)
+  group_by(anno, mes) |> 
+  count(siglas) |> #Por elección cuento nº de veces qeu aparece el partido como más votado (=nº de municipios donde ganó) 
+  ungroup() |> 
+  mutate(
+    siglas = factor(siglas, levels = unique(siglas)), # Aseguramos el orden
+    eleccion = case_when(
+      anno == 2008 ~ "2008",
+      anno == 2011 ~ "2011",
+      anno == 2015 ~ "2015",
+      anno == 2016 ~ "2016",
+      anno == 2019 & mes == "04" ~ 
+      "2019 (abril)",
+      anno == 2019 & mes == "11" ~ 
+        "2019 (noviembre)"
+    )
+  )
 
 ```
 
+
+---
+
+
 ```{r}
 #| eval: FALSE
-
 #Algunas comprobaciones
 tabla_maestra |> 
   filter(censo > 100000) |> 
@@ -312,4 +340,34 @@ tabla_maestra |>
 ```
 
 
+# Primera pregunta
+
+¿Qué partido fue el ganador en los municipios con más de 100.000 habitantes (censo) en cada una de las elecciones?
+
+```{r}
+#| eval: false
+
+colores_partidos <- c("OTRO" = "grey45", "PP" = "#17589d", "PNV" = "#308444", 
+                      "PODEMOS-IU" = "#6b1f5f", "VOX" = "#5ac035", 
+                      "PSOE" = "#c20e1a", "ERC" = "#fcc34e", "BNG" = "#76b3dd",
+                      "C's" = "#fb5000")
+
+ggplot(datos_p1, aes(fill = siglas, values = n)) +
+  geom_waffle(n_rows = 10) +
+  facet_grid(~eleccion) +
+  scale_fill_manual(values = colores_partidos) +
+  labs(title = "Partidos ganadores en municipios con >100.000 habitantes",
+         fill = "Partido") +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    axis.text = element_blank(),
+    strip.text = element_text(face = "bold",
+                              size =9),
+    plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10)))
+
+```
+---
 
