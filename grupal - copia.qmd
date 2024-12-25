@@ -145,35 +145,35 @@ cambia_nombres <- function(partido, nombres) {
   partido_min <- str_to_lower(partido)
   nombres_min <- str_to_lower(nombres)
   
-  if (str_detect(partido_min, c("sortu|eusko alkartasuna|aralar|alternatiba|euskal herria bildu"))) { #Añado el nombre completo de EH - Bildu y cambio a str_detect porque antes no captaba todo lo que debía (ej 2008, Victoria-Gasteiz EZKER BATUA-BERDEAK-ALTERNATIVA)
+  if (str_detect(partido_min, "\\bsortu\\b|\\beusko alkartasuna\\b|\\baralar\\b|\\balternatiba\\b|\\beuskal herria bildu\\b")) { #Añado el nombre completo de EH - Bildu y cambio a str_detect porque antes no captaba todo lo que debía (ej 2008, Victoria-Gasteiz EZKER BATUA-BERDEAK-ALTERNATIVA)
     return("EH - BILDU")
   }
   
-  if (str_detect(partido_min, c("unidas podemos|unidos podemos|podemos|iu|podem|ezker batua"))) {
+   if (str_detect(partido_min, "\\bunidas podemos\\b|\\bunidos podemos\\b|\\bpodemos\\b|\\biu\\b|\\bpodem\\b|\\bezker batua\\b")) {
     return("UNIDAS PODEMOS - IU")
   }
   
-  if (str_detect(partido_min,"vasc")) {
+  if (str_detect(partido_min,"\\bpartido nacionalista vasco\\b")) {
     return("PARTIDO NACIONALISTA VASCO")
   }
   
-  if (str_detect(partido_min,c("psoe|partido socialista obrero español"))) {
+  if (str_detect(partido_min,"\\bpsoe\\b|\\bpartido socialista obrero español\\b")) {
     return("PARTIDO SOCIALISTA OBRERO ESPAÑOL")
   }
   
-    if (str_detect(partido_min,c("pp|partido popular"))) {
+    if (str_detect(partido_min,"\\bpp\\b|\\bpartido popular\\b")) {
     return("PARTIDO POPULAR")
     }
   
-  if (str_detect(partido_min,c("bloque nacionalista galego"))) {
+  if (str_detect(partido_min,"\\bbloque nacionalista galego\\b")) {
     return("BLOQUE NACIONALISTA GALLEGO")  
   }
   
-  if (str_detect(partido_min,c("partido de la ciudadania"))) {
+  if (str_detect(partido_min,"\\bpartido de la ciudadania\\b")) {
     return("CIUDADANOS")  
   }
   
-  if (str_detect(partido_min,c("esquerra republicana de catalunya"))) { #Nótese que quedan aún partidos tipo coalición (considero que deberían incluirse)
+  if (str_detect(partido_min,"\\besquerra republicana de catalunya\\b")) { #Nótese que quedan aún partidos tipo coalición (considero que deberían incluirse)
     return("ESQUERRA REPUBLICANA DE CATALUNYA")  
   }
   
@@ -184,14 +184,16 @@ cambia_nombres <- function(partido, nombres) {
   return("OTRO")
 }
 
-cambia_nombres("PARTIT POPULAR-PARTIDO POPULAR", nombres_partidos) #ejemplo
+cambia_nombres("PARTIDO MINERO POPULAR", nombres_partidos) #ejemplo
+cambia_nombres("PARTIT POPUPLR-PARTIDO POPULAR", nombres_partidos) #ejemplo
+cambia_nombres("CIUDADANOS-PARTIDO DE LA CIUDADANIA", nombres_partidos)
 
 #Aplicar función al dataframe
 eleccion_tidy_filt <- eleccion_tidy |> rowwise() |> mutate(partido_n = cambia_nombres(partido, nombres_partidos))
 
 #Reagrupar partido "otro"
 eleccion_resumen <- eleccion_tidy_filt |>
-  group_by(partido_n,anno,mes,codigo_ccaa,codigo_provincia,codigo_municipio,codigo_distrito_electoral) |> 
+  group_by(partido_n,anno,mes,codigo_ccaa,codigo_provincia,codigo_municipio) |> 
   mutate(votos_totales_partido = sum(votos)) |> 
   ungroup() # Ver anotaciones del cambio
 
