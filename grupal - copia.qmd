@@ -157,7 +157,7 @@ cambia_nombres <- function(partido, nombres) {
     return("PARTIDO NACIONALISTA VASCO")
   }
   
-  if (str_detect(partido_min,"\\bpsoe\\b|\\bpartido socialista obrero español\\b")) {
+  if (str_detect(partido_min,"\\bpsoe\\b|\\bpartido socialista obrero español\\b\\bpartido socialista de euskadi\\b|\\bpartit dels socialistes de catalunya\\b|\\bpartido dos socialistas de galicia\\b")) {
     return("PARTIDO SOCIALISTA OBRERO ESPAÑOL")
   }
   
@@ -309,38 +309,6 @@ datos_p1 <- tabla_maestra |> #Una fila por municipio
 
 
 ---
-
-
-```{r}
-#| eval: FALSE
-#Algunas comprobaciones
-tabla_maestra |> 
-  filter(censo > 100000) |> 
-  slice_max(votos_totales_partido, by = c(anno, mes, cod_poblacion)) |> 
-  distinct(anno, mes, municipio, cod_poblacion, partido_n, votos_totales_partido, votos_candidaturas) |> 
-  count(municipio, cod_poblacion) |> 
-  arrange(n)  #Hay dos municipios que no participaron en todas las elecciones
-
-tabla_maestra |> 
-  filter(censo > 100000) |> 
-  slice_max(votos_totales_partido, by = c(anno, mes, cod_poblacion)) |> 
-  distinct(anno, mes, municipio, cod_poblacion, partido_n, votos_totales_partido, votos_candidaturas) |> 
-  filter(cod_poblacion %in% c("01-11-012", "01-41-038")) #Prece que Cádiz no estaba en 2016 ni las de 2019
-
-tabla_maestra |> 
-  filter(municipio == "Cádiz") |> 
-  select(censo, anno, mes) |>
-  filter(censo < 100000) |> 
-  distinct(anno, mes) #En efecto ocurre eso
-
-tabla_maestra |> 
-  filter(municipio == "Dos Hermanas") |> 
-  select(censo, anno, mes) |>
-  filter(censo < 100000) |> 
-  distinct(anno, mes) #Aquí no llegaban en 2008, 2011 ni 2015
-
-```
-
 
 # Primera pregunta
 
