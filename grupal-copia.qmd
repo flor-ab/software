@@ -242,11 +242,25 @@ surveys_tidy <-
                values_to = "intencion_voto", 
                values_drop_na = TRUE) |>
   drop_na(size) |>  
-  filter(size >=500 & exit_poll == FALSE) |>   #tamaño muestraly a pie de urna
+  filter(size >=500 & exit_poll == FALSE) |>   #tamaño muestral y a pie de urna
   filter(date_elec >= "2008-01-01") |>  #elecciones desde 2008
   mutate(duracion_t_campo = field_date_to - field_date_from) |> 
   filter(duracion_t_campo > 1) |> #descartar enucentas con 1 días o menos de trabajo de campo
-  select(-exit_poll) #quitar var. a pie de urna porque no es informativa (sólo quedan las que no lo)
+  select(-exit_poll) |>  #quitar var. a pie de urna porque no es informativa (sólo quedan las que no lo)
+  mutate(siglas = case_when(
+            partidos == "PSOE" ~ "PSOE",
+            partidos == "PP" ~ "PP",
+            partidos == "CC" ~ "C's",
+            partidos == "BNG" ~ "BNG",
+            partidos == "ERC" ~ "ERC",
+            partidos == "IU" ~ "PODEMOS-IU",
+            partidos == "UP" ~ "PODEMOS-IU",
+            partidos == "PODEMOS" ~ "PODEMOS-IU",
+            partidos == "EH-BILDU" ~ "EH-BILDU",
+            partidos == "EAJ-PNV" ~ "PNV",
+            partidos == "VOX" ~ "VOX",
+            TRUE ~ "OTRO" ),
+         turnout = if_else(is.na(turnout), 0, turnout))
 
 # names(surveys_tidy) <- c("tipo_encuesta", "fecha_elecciones", "id_entrevistador", "entrevistador", "media",
 #                          "inicio_trabajo", "final_trabajo", "pie_urna", "n", "participacion_estimada",
@@ -486,6 +500,161 @@ ggplot(datos_p2_b, aes(fill = siglas_seg, values = n)) +
 
 ¿Cómo calibrar el error de las encuestas (recordemos que las encuestas son de intención de voto a nivel nacional)?
 
+Resultados de las elecciones:
 
+```{r}
+#| code-fold: true
+# Preparamos los resultados de las elecciones, vemos qué porcentaje de votos ha ido a cada partido
+
+datos_generales_elecciones <- 
+  tabla_maestra |>
+  group_by(anno,mes) |> 
+  distinct(anno, mes, cod_poblacion, codigo_ccaa, codigo_provincia, codigo_municipio, codigo_distrito_electoral, censo, votos_blancos, votos_nulos, votos_candidaturas) |> 
+  mutate(censo = sum(censo),
+         votos_blancos = sum(votos_blancos),
+         votos_nulos = sum(votos_nulos),
+         votos_candidaturas = sum(votos_candidaturas),
+         eleccion = case_when(
+            anno == 2008 ~ "2008",
+            anno == 2011 ~ "2011",
+            anno == 2015 ~ "2015",
+            anno == 2016 ~ "2016",
+            anno == 2019 & mes == "04" ~ 
+            "2019 (abril)",
+            anno == 2019 & mes == "11" ~ 
+              "2019 (noviembre)")) |> 
+  ungroup() |> 
+  distinct(eleccion, censo, votos_blancos, votos_nulos, votos_candidaturas) 
+
+datos_partido <-
+  tabla_maestra |> 
+  group_by(anno, mes, siglas) |> 
+  mutate(votos_partido = sum(votos),
+         eleccion = case_when(
+            anno == 2008 ~ "2008",
+            anno == 2011 ~ "2011",
+            anno == 2015 ~ "2015",
+            anno == 2016 ~ "2016",
+            anno == 2019 & mes == "04" ~ 
+            "2019 (abril)",
+            anno == 2019 & mes == "11" ~ 
+              "2019 (noviembre)")) |> 
+  ungroup() |> 
+  distinct(eleccion, siglas, votos_partido) |> 
+  left_join(datos_generales_elecciones, by = c("eleccion" = "eleccion")) |> 
+  mutate(votos_porc_votantes_cand = round(votos_partido / votos_candidaturas, 2), # Porcentaje sobre la gente que voto candidaturas
+         votos_porc_censo = round(votos_partido / censo, 2)) # Porcentaje sobre la gente censada,
+
+datos_partido <-
+  datos_partido |> 
+  mutate(siglas = factor(siglas, levels = c("PP","PSOE","PNV","OTRO","ERC","BNG","PODEMOS-IU","C's","EH-BILDU","VOX"), 
+                         ordered = TRUE)) 
+
+
+grafico_resultados_elecciones <- 
+  ggplot(datos_partido, aes(x = eleccion, y = votos_porc_votantes_cand, fill = siglas)) +
+  geom_col(position = "fill") +
+    geom_text(
+    aes(
+      label = ifelse(votos_porc_votantes_cand > 0.08, scales::percent(votos_porc_votantes_cand, accuracy = 1), ""),
+      y = votos_porc_votantes_cand / 2
+    ),
+    position = position_fill(vjust = 0.5),
+    size = 3,
+    color = "white"
+  ) +
+  scale_fill_manual(values = colores_partidos) +
+  labs(
+    x = "Elecciones",
+    y = "Porcentaje de votos",
+    fill = "Partido"
+  ) +
+  theme_minimal()
+grafico_resultados_elecciones
+```
+
+---
+
+Podemos ver que los resultados de las encuestas se suelen desviar entre cero con algo y 2 puntos porcentuales
+
+```{r}
+#| code-fold: true
+# Preparamos los datos de las encuestas, vemos qué porcentaje de votantes se estiman para cada partido
+
+surveys_general <-
+  surveys_tidy |> 
+  distinct(date_elec, pollster, field_date_from, size, turnout) |> 
+  #filter(id_pollster == "pollster-49" & date_elec== "2011-11-20")
+  mutate(personas_turnout = round((size * turnout)/100),0) |> 
+  group_by(date_elec, pollster) |> 
+  mutate(size = sum(size),
+         personas_turnout = sum(personas_turnout, na.rm = TRUE)) |> 
+  distinct(date_elec, pollster, size, personas_turnout)
+  
+
+surveys_partido <-
+  surveys_tidy |> 
+  mutate(votantes = round(((size - turnout)*intencion_voto)/100, 0)) |> 
+  group_by(date_elec, pollster, siglas) |> 
+  mutate(votantes_estimados = sum(votantes, na.rm = TRUE)) |> 
+  distinct(date_elec, pollster, siglas, votantes_estimados) |> 
+  left_join(surveys_general, by = c("date_elec" = "date_elec", "pollster" = "pollster")) |> 
+  mutate(votos_porc_votantes_cand = round(votantes_estimados / (size - personas_turnout), 2),
+         votos_porc_censo = round(votantes_estimados / size, 2),
+         eleccion =  case_when(
+            year(date_elec) == 2008 ~ "2008",
+            year(date_elec)  == 2011 ~ "2011",
+            year(date_elec)  == 2015 ~ "2015",
+            year(date_elec)  == 2016 ~ "2016",
+            year(date_elec)  == 2019 & month(date_elec)  == "04" ~ 
+            "2019 (abril)",
+            year(date_elec)  == 2019 &  month(date_elec) == "11" ~ 
+              "2019 (noviembre)"))  |> 
+  group_by(eleccion, siglas) |> 
+  mutate(media_porc_encuesta = mean(votos_porc_votantes_cand)) |> 
+  ungroup()
+
+# Comparamos los datos reales vs los de las encuestas
+comparacion <- 
+  left_join(x = surveys_partido, y = datos_partido, by = c("eleccion" = "eleccion", "siglas" = "siglas")) |> 
+  select (eleccion, pollster, siglas, votos_porc_votantes_cand.x, votos_porc_votantes_cand.y, votos_porc_censo.x, votos_porc_censo.y) |> 
+  mutate(error_relativo_cand = abs(votos_porc_votantes_cand.y - votos_porc_votantes_cand.x) / votos_porc_votantes_cand.y,
+         error_relativo_censo = abs(votos_porc_censo.y - votos_porc_censo.x) / votos_porc_censo.y) |> 
+  drop_na(eleccion)
+
+grafico_comparacion_partido <-
+  ggplot(comparacion, aes(x = error_relativo_cand, y = siglas, fill = siglas)) +
+  geom_boxplot() +
+  facet_wrap(~eleccion) +
+  scale_fill_manual(values = colores_partidos)  +
+    labs(
+    x = "Error absoluto relativo",
+    y = "Partido",
+    fill = "Partido"
+  ) +
+  guides(fill = "none")
+grafico_comparacion_partido
+```
+
+---
+
+Parece que hay algunas empresas encuestadoras que se desvían más que otras, ver cómo poner este gráfico por años
+
+```{r}
+#| code-fold: true
+grafico_comparacion_pollster <-
+  comparacion |> 
+  filter(eleccion == "2015") |> 
+  ggplot( aes(x = error_relativo_cand, y = pollster, fill = pollster)) +
+  geom_boxplot() +
+  labs(
+    x = "Error absoluto relativo",
+    y = "Encuestadora",
+    fill = "Encuestadora"
+  ) +
+  guides(fill = "none") +
+  facet_wrap(~eleccion) 
+grafico_comparacion_pollster
+```
 
 ---
