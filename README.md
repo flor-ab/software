@@ -23,5 +23,12 @@ Terminar depuración y primera pregunta:
           - Por cada elección un gofre
           - Un cuadrado por cada municipio con más de 100.000 hab.
           - Color del cuadrado dependiente de qué partido recibió más votos
+
+    SEGUNDA PREGUNTA
+    - Aprovecho lo que hizo jazmín para la primera pregunta y repito los gráficos de gofre. Podemos buscar otros gráficos si queréis innovar
+   
+    TERCERA PREGUTNA
+    - No estoy muy convencida de como está, os lo subo para que podáis seguir avanzando pero voy a ir dándole una vuelta en paralelo.
+    - Básicamente he calculado el porcentaje de votos de cada partido en cada elección y el porcentaje de votos de cada partido en las encuestas de cada elección. Con eso, obtengo un error absoluto para ver en cuántos puntos se pasan las encuestas. He hecho un gráfico con los resultados de las elecciones y comaprado con los datos que hay de resumen en Wikipedia y parece que está OK. Para los errores, he hecho boxplot. Me gustaría darle una vuelta porque no me aprece que esté cerrada del todo la pregunta, y además le voy a preguntar a javi por lo de la intención de voto que comentamos ayer.
     - Alternativamente, un gráfico tipo gofre en lugar de uno de barras
   
