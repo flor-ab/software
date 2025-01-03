@@ -31,4 +31,16 @@ Terminar depuración y primera pregunta:
     - No estoy muy convencida de como está, os lo subo para que podáis seguir avanzando pero voy a ir dándole una vuelta en paralelo.
     - Básicamente he calculado el porcentaje de votos de cada partido en cada elección y el porcentaje de votos de cada partido en las encuestas de cada elección. Con eso, obtengo un error absoluto para ver en cuántos puntos se pasan las encuestas. He hecho un gráfico con los resultados de las elecciones y comaprado con los datos que hay de resumen en Wikipedia y parece que está OK. Para los errores, he hecho boxplot. Me gustaría darle una vuelta porque no me aprece que esté cerrada del todo la pregunta, y además le voy a preguntar a javi por lo de la intención de voto que comentamos ayer.
     - Alternativamente, un gráfico tipo gofre en lugar de uno de barras
-  
+
+
+  CUARTA PREGUNTA
+  - Se ha calculado la correlación entre el censo y los votos totales por partido utilizando la función cor. El resultado es correlación de 0.8238768, indicando una fuerte relación positiva entre ambas variables.
+la relación entre los votos totales por partido y el censo, ha obtenido un valor de 0.1747194. Esto indica que, en promedio, los votos totales representan aproximadamente el 17.47% del censo.
+El modelo tiene un ajuste bastante bueno, con un R-cuadrado de 0.6788, lo que sugiere que más del 67% de la variabilidad de los votos totales por partido es explicada por el censo.
+- Se observa una dispersión de los datos, aunque parece ver un parece haber un patrón no aleatorio en los residuos, especialmente en los valores extremos del eje  x (valores ajustados). Esto puede indicar que la relación entre el censo y los votos no es completamente lineal y que podría haber heterocedasticidad. También es visible que hay puntos que parecen muy alejados del eje horizontal (residuos grandes, tanto positivos como negativos).
+
+- Se filtraron los datos para incluir únicamente las zonas clasificadas como "rural" y "semi_rural". Luego, se calcularon los porcentajes de votos por partido en estas zonas, agrupando los datos por partido y sumando los votos totales para cada uno. Posteriormente, se calculó el porcentaje de votos que representa cada partido sobre el total de votos en las zonas rurales.
+
+De manera similar, se filtraron los datos para las zonas urbanas y se repitió el proceso de cálculo de porcentajes de votos por partido. Finalmente, se combinaron los resultados de ambas zonas para comparar directamente los porcentajes de votos por partido entre zonas rurales y urbanas.
+
+El análisis reveló diferencias significativas en las preferencias electorales entre las zonas rurales y urbanas, proporcionando una visión clara de cómo varía el apoyo a los partidos según la zona. Estos resultados son fundamentales para entender las dinámicas electorales y pueden ser utilizados para diseñar estrategias de campaña más efectivas y dirigidas a las necesidades y preferencias específicas de cada zona.
