@@ -350,7 +350,7 @@ datos_p1 <-
 colores_partidos <- c("OTRO" = "grey45", "PP" = "#17589d", "PNV" = "#308444", 
                       "PODEMOS-IU" = "#6b1f5f", "VOX" = "#5ac035", 
                       "PSOE" = "#c20e1a", "ERC" = "#fcc34e", "BNG" = "#76b3dd",
-                      "C's" = "#fb5000")
+                      "C's" = "#fb5000", "EH-BILDU" = "#1af7db")
 
 ggplot(datos_p1, aes(fill = siglas, values = n)) +
   geom_waffle(n_rows = 10) +
@@ -580,18 +580,26 @@ Podemos ver que los resultados de las encuestas se suelen desviar entre cero con
 ```{r}
 #| code-fold: true
 # Preparamos los datos de las encuestas, vemos qué porcentaje de votantes se estiman para cada partido
+head(surveys_tidy)
 
 surveys_general <-
   surveys_tidy |> 
-  distinct(date_elec, pollster, field_date_from, size, turnout) |> 
-  #filter(id_pollster == "pollster-49" & date_elec== "2011-11-20")
+  distinct(date_elec, pollster, field_date_from, field_date_to, size, turnout) |> 
   mutate(personas_turnout = round((size * turnout)/100),0) |> 
   group_by(date_elec, pollster) |> 
   mutate(size = sum(size),
-         personas_turnout = sum(personas_turnout, na.rm = TRUE)) |> 
-  distinct(date_elec, pollster, size, personas_turnout)
+         personas_turnout = sum(personas_turnout, na.rm = TRUE),
+         eleccion =  case_when(
+            year(date_elec) == 2008 ~ "2008",
+            year(date_elec)  == 2011 ~ "2011",
+            year(date_elec)  == 2015 ~ "2015",
+            year(date_elec)  == 2016 ~ "2016",
+            year(date_elec)  == 2019 & month(date_elec)  == "4" ~ 
+            "2019 (abril)",
+            year(date_elec)  == 2019 &  month(date_elec) == "11" ~ 
+              "2019 (noviembre)")) |> 
+  distinct(eleccion, pollster, size, personas_turnout)
   
-
 surveys_partido <-
   surveys_tidy |> 
   mutate(votantes = round(((size - turnout)*intencion_voto)/100, 0)) |> 
@@ -606,7 +614,7 @@ surveys_partido <-
             year(date_elec)  == 2011 ~ "2011",
             year(date_elec)  == 2015 ~ "2015",
             year(date_elec)  == 2016 ~ "2016",
-            year(date_elec)  == 2019 & month(date_elec)  == "04" ~ 
+            year(date_elec)  == 2019 & month(date_elec)  == "4" ~ 
             "2019 (abril)",
             year(date_elec)  == 2019 &  month(date_elec) == "11" ~ 
               "2019 (noviembre)"))  |> 
@@ -615,12 +623,20 @@ surveys_partido <-
   ungroup()
 
 # Comparamos los datos reales vs los de las encuestas
+
 comparacion <- 
   left_join(x = surveys_partido, y = datos_partido, by = c("eleccion" = "eleccion", "siglas" = "siglas")) |> 
   select (eleccion, pollster, siglas, votos_porc_votantes_cand.x, votos_porc_votantes_cand.y, votos_porc_censo.x, votos_porc_censo.y) |> 
   mutate(error_relativo_cand = abs(votos_porc_votantes_cand.y - votos_porc_votantes_cand.x) / votos_porc_votantes_cand.y,
-         error_relativo_censo = abs(votos_porc_censo.y - votos_porc_censo.x) / votos_porc_censo.y) |> 
+         error_relativo_censo = abs(votos_porc_censo.y - votos_porc_censo.x) / votos_porc_censo.y,
+         error_real = (votos_porc_votantes_cand.x - votos_porc_votantes_cand.y) / votos_porc_votantes_cand.y ,
+         error_positivo_negativo = case_when (error_real >=0 ~ "Positivo", TRUE ~ "Negativo")) |> 
   drop_na(eleccion)
+```
+
+```{r}
+
+# Propuesta 0 : caja y bigotes
 
 grafico_comparacion_partido <-
   ggplot(comparacion, aes(x = error_relativo_cand, y = siglas, fill = siglas)) +
@@ -634,6 +650,109 @@ grafico_comparacion_partido <-
   ) +
   guides(fill = "none")
 grafico_comparacion_partido
+
+```
+
+```{r}
+#| code-fold: true
+
+# Propuesta 1 : barras
+
+error_positivo_negativo <-
+  comparacion |> 
+  group_by(pollster) |> 
+  count(error_positivo_negativo) |> 
+  mutate(totales = sum(n),
+         porc = round(n / totales,1))
+
+orden_pollsters <-
+  error_positivo_negativo |> 
+  filter(error_positivo_negativo == "Negativo") |> 
+  arrange(-porc) |> 
+  select(pollster) |> 
+  pull()
+
+error_positivo_negativo <-
+  error_positivo_negativo |> 
+  mutate(pollster = factor(pollster, levels = orden_pollsters, ordered= TRUE))
+
+ggplot(error_positivo_negativo) + 
+  geom_col(aes( y = pollster, x = porc, fill = error_positivo_negativo)) +
+    theme(axis.text.y = element_text(size = 7))
+
+```
+
+```{r}
+#| code-fold: true
+
+# Propuesta 2 : lollipop
+
+# Partido que ganó las elecciones
+datos_partido_ganador <- 
+  datos_partido |> 
+  group_by(eleccion) |> 
+  slice_max(votos_partido)
+
+comparacion_filtro <- 
+  comparacion |> 
+  inner_join(y = datos_partido_ganador, by = c("eleccion" = "eleccion", "siglas" = "siglas")) |> 
+  filter(eleccion == "2019 (noviembre)") |> 
+  select(eleccion, pollster, error_real)
+
+orden_pollsters2 <-
+  comparacion_filtro |> 
+  arrange(- error_real) |> 
+  select(pollster) |> 
+  pull()
+
+comparacion_filtro <-
+  comparacion_filtro |> 
+  mutate(pollster = factor(pollster, levels = orden_pollsters2, ordered = TRUE))
+  
+ggplot(comparacion_filtro, aes(x = pollster, y = error_real)) +
+  geom_segment( aes(x = pollster, xend = pollster, y=0, yend = error_real), color="grey", size = 1.2) +
+  geom_point( color="orange", size = 4) +
+  facet_wrap(~ eleccion) +
+  theme_light() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_text(angle = 90)
+  ) +
+  xlab("") +
+  ylab("Desviación porc. de los votos reales") +
+  coord_flip()
+```
+
+```{r}
+#| code-fold: true
+
+# Propuesta 3: lollipop por años con el promedio
+
+comparacion_filtro3 <- 
+  comparacion |> 
+  inner_join(y = datos_partido_ganador, by = c("eleccion" = "eleccion", "siglas" = "siglas")) |>
+  group_by(eleccion) |> 
+  mutate(promedio_error = mean(error_real)) |> 
+  distinct(eleccion, promedio_error)
+
+
+ggplot(comparacion_filtro3, aes(x = eleccion, y = promedio_error)) +
+  geom_segment( aes(x = eleccion, xend = eleccion, y=0, yend = promedio_error), color="grey", size = 1.2) +
+  geom_point( color="orange", size = 4) +
+  theme_light() +
+  theme(
+    panel.grid.major.x = element_blank(),
+    panel.border = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_text(angle = 90)
+  ) +
+  xlab("") +
+  ylab("Desviación porc. de los votos reales") +
+  coord_flip()
+
+
 ```
 
 ---
@@ -642,6 +761,8 @@ Parece que hay algunas empresas encuestadoras que se desvían más que otras, ve
 
 ```{r}
 #| code-fold: true
+
+# Propuesta 4: cajas y bigotes por encuestadora
 grafico_comparacion_pollster <-
   comparacion |> 
   filter(eleccion == "2015") |> 
@@ -655,6 +776,595 @@ grafico_comparacion_pollster <-
   guides(fill = "none") +
   facet_wrap(~eleccion) 
 grafico_comparacion_pollster
+```
+
+
+---
+
+```{r}
+#| code-fold: true
+# Preparación para ráfico escaños
+
+datos_elecciones_provincia <- 
+  tabla_maestra |>
+  group_by(anno, mes, codigo_provincia) |> 
+  distinct(anno, mes, codigo_provincia, votos_blancos, votos_candidaturas) |> 
+  mutate(votos_blancos = sum(votos_blancos),
+         votos_candidaturas = sum(votos_candidaturas),
+         eleccion = case_when(
+            anno == 2008 ~ "2008",
+            anno == 2011 ~ "2011",
+            anno == 2015 ~ "2015",
+            anno == 2016 ~ "2016",
+            anno == 2019 & mes == "04" ~ 
+            "2019 (abril)",
+            anno == 2019 & mes == "11" ~ 
+              "2019 (noviembre)")) |> 
+  ungroup() |> 
+  distinct(eleccion, codigo_provincia, votos_blancos, votos_candidaturas) 
+
+datos_partido_provincia <-
+  tabla_maestra |> 
+  group_by(anno, mes, codigo_provincia,  partido) |> 
+  mutate(votos_partido = sum(votos),
+         eleccion = case_when(
+            anno == 2008 ~ "2008",
+            anno == 2011 ~ "2011",
+            anno == 2015 ~ "2015",
+            anno == 2016 ~ "2016",
+            anno == 2019 & mes == "04" ~ 
+            "2019 (abril)",
+            anno == 2019 & mes == "11" ~ 
+              "2019 (noviembre)")) |> 
+  ungroup() |> 
+  distinct(anno, eleccion, codigo_provincia, partido, votos_partido) 
+  #left_join(datos_elecciones_provincia, by = c("eleccion" = "eleccion", "codigo_provincia" = "codigo_provincia")) |> 
+  #mutate(porc_votos_validos = round(votos_partido / (votos_candidaturas + votos_blancos), 2)) # % votos de la provincia
+  #filter(porc_votos_validos >= 0.03)   # Para participar en D'Hondt 
+
+
+# datos_partido_provincia |> 
+#   group_by(eleccion, partido) |> 
+#   summarise(suma = sum(votos_partido)) |> 
+#   ungroup() |> 
+#   write.csv(file="votos_partidos.csv")
+
+
+
+# Importamos el número de escaños por provincia y año
+
+library(readr)
+escannos_provincia_anno <- read_csv("data/escannos_provincia_anno.csv")
+
+escannos_provincia_anno <-
+  escannos_provincia_anno |> 
+  mutate(codigo_provincia = as.character(case_when(
+          Provincia == "Madrid" ~ "28",
+          Provincia == "Barcelona" ~ "08",
+          Provincia == "Valencia" ~ "46",
+          Provincia == "Sevilla" ~ "41",
+          Provincia == "Alicante" ~ "03",
+          Provincia == "Málaga" ~ "29",
+          Provincia == "Murcia" ~ "30",
+          Provincia == "Cádiz" ~ "11",
+          Provincia == "Baleares" ~ "07",
+          Provincia == "La Coruña" ~ "15",
+          Provincia == "Las Palmas" ~ "35",
+          Provincia == "Asturias" ~ "33",
+          Provincia == "Granada" ~ "18",
+          Provincia == "Pontevedra" ~ "36",
+          Provincia == "Santa Cruz de Tenerife" ~ "38",
+          Provincia == "Zaragoza" ~ "50",              
+          Provincia == "Almería" ~ "04",
+          Provincia == "Córdoba" ~ "14",
+          Provincia == "Gerona" ~ "17",
+          Provincia == "Guipúzcoa" ~ "20",
+          Provincia == "Tarragona" ~ "43",
+          Provincia == "Toledo" ~ "45",
+          Provincia == "Badajoz" ~ "06",
+          Provincia == "Cantabria" ~ "39",
+          Provincia == "Castellón" ~ "12",
+          Provincia == "Ciudad Real" ~ "13",
+          Provincia == "Huelva" ~ "21",
+          Provincia == "Jaén" ~ "23",
+          Provincia == "Navarra" ~ "31",
+          Provincia == "Valladolid"  ~ "47",
+          Provincia == "Álava" ~ "01",
+          Provincia == "Albacete" ~ "02",
+          Provincia == "Burgos" ~ "09",
+          Provincia == "Cáceres" ~ "10",
+          Provincia == "León" ~ "24",
+          Provincia == "Lérida"  ~ "25",
+          Provincia == "Lugo" ~ "27",
+          Provincia == "Orense" ~ "32",
+          Provincia == "La Rioja" ~ "26",
+          Provincia == "Salamanca"  ~ "37",
+          Provincia == "Ávila" ~ "05",
+          Provincia == "Cuenca" ~ "16",
+          Provincia == "Guadalajara" ~ "19",
+          Provincia == "Huesca"  ~ "22",
+          Provincia == "Palencia"  ~ "34",
+          Provincia == "Segovia" ~ "40",
+          Provincia == "Teruel" ~ "44",
+          Provincia == "Vizcaya" ~ "48",
+          Provincia == "Zamora" ~ "49",
+          Provincia == "Soria" ~ "42",
+          Provincia == "Ceuta" ~ "51",
+          Provincia == "Melilla" ~ "52"))) |> 
+  distinct() 
+
+
+datos_provincia_escannos <-
+  datos_partido_provincia |> 
+  left_join(escannos_provincia_anno, by = c("anno" = "Año", "codigo_provincia" = "codigo_provincia")) |> 
+  select(eleccion, codigo_provincia, partido, votos_partido, "Número de escaños")
+
+## Función D'Hondt
+dHondt <- function(votos, partidos, escaños) {
+  
+  # Formato tibble
+  tabla <- tibble(partido = partidos, votos = votos)
+  
+  # Divisores
+  divisores <- rep(1, length(votos))
+  escaños_asignados <- integer(length(votos))
+  
+  # Tenemos que repetir el proceso por escaños
+  for (i in 1:escaños) {
+    # Máximo cociente
+    cocientes <- votos / divisores
+    max_index <- which.max(cocientes)
+    escaños_asignados[max_index] <- escaños_asignados[max_index] + 1
+    divisores[max_index] <- divisores[max_index] + 1
+  }
+  
+  # Resultado final
+  resultado <- tibble(
+    partido = partidos,
+    escaños = escaños_asignados
+  )
+  
+  return(resultado)
+}
+
+
+## Función DHondt por provincias
+
+dHondt_provincias <- function(tibble) {
+  
+  # Inicializamos los resultados
+  resultados_dhondt <- tibble()
+  
+  # Por cada elección de las que tenemos
+  for (elec in unique(tibble$eleccion)) {
+    # Filtrar por elección actual
+    tibble_funcion <- 
+      tibble |> 
+      filter(eleccion == elec)
+    
+    # Por cada provincia, ya que cada una tiene unos escaños
+    for (provin in unique(tibble_funcion$codigo_provincia)) {
+      # Filtrar por provincia actual
+      tibble_funcion2 <- 
+        tibble_funcion |> 
+        filter(codigo_provincia == provin)
+      
+      # Aplicamos la función de antes
+      resultados <- 
+        dHondt(
+        votos = tibble_funcion2$votos_partido, 
+        partidos = tibble_funcion2$partido, 
+        escaños = unique(tibble_funcion2$`Número de escaños`)
+      )
+      
+      # Añadimos qué elección es y provincia
+      resultados <- 
+        resultados |> 
+        mutate(eleccion = elec, 
+               codigo_provincia = provin)
+      
+      # Añadimos a la inicialización
+      resultados_dhondt <- bind_rows(resultados_dhondt, resultados)
+    }
+  }
+  
+  return(resultados_dhondt)
+}
+
+resultado_dhondt <-
+  dHondt_provincias(datos_provincia_escannos) 
+# |> 
+#   group_by(eleccion, partido) |> 
+#   summarise(sum(escaños)) |> 
+#   write.csv(file = "escaños_partidos.csv")
+
+
+congreso <- 
+  resultado_dhondt |> 
+  rowwise() |> 
+  mutate(partido = cambia_nombres(partido, nombres = nombres_partidos)) |>
+  ungroup() |> 
+  mutate(siglas = case_when(
+            partido == "PARTIDO SOCIALISTA OBRERO ESPAÑOL" ~ "PSOE",
+            partido == "PARTIDO POPULAR" ~ "PP",
+            partido == "CIUDADANOS" ~ "C's",
+            partido == "BLOQUE NACIONALISTA GALLEGO" ~ "BNG",
+            partido == "ESQUERRA REPUBLICANA DE CATALUNYA" ~ "ERC",
+            partido == "UNIDAS PODEMOS - IU" ~ "PODEMOS-IU",
+            partido == "EH - BILDU" ~ "EH-BILDU",
+            partido == "PARTIDO NACIONALISTA VASCO" ~ "PNV",
+            partido == "VOX" ~ "VOX",
+            TRUE ~ "OTRO" )) |> 
+   group_by(siglas, eleccion) |> 
+   summarise(escannos = sum(escaños)) |> 
+     ungroup() #|> 
+  #arrange(eleccion, escannos)
+
+congreso <- 
+  congreso |> 
+  mutate(siglas = factor(siglas, 
+                         levels = unique(congreso$siglas), 
+                         labels = c("BNG", "C's", "EH-BILDU", "ERC", "OTRO", "PNV", "PODEMOS-IU", "PP", "PSOE", "VOX"), 
+                         ordered = TRUE)) 
+
+
+
+unique(congreso$eleccion)
+
+```
+
+---
+
+```{r}
+#| code-fold: true
+## Gráfico de congreso
+
+library(ggpol)
+library(ggforce)
+
+# Tenemos que filtar por años, porque la geometria geom_parliament() da problemas
+# con las leyends de colores/relleno con los facet wrap si los niveles de las 
+# leyendas no son exactamente los mismos siempre.
+
+# 2008 #
+
+congreso_2008 <-
+congreso |> 
+           filter(eleccion == "2008")
+
+# congreso_2008 |> 
+#   group_by(siglas) |> 
+#   summarise(escannos) |> 
+#   arrange(escannos)
+
+colores_2008 <- c(
+  "8" = "#1D84CE", # PP
+  "9" = "#FF0000", # SOE
+  "6" = "#6A5ACD", # PNV 
+  "7" = "#808080", # OTRO 
+  "5" = "#FF7F48", # ERC
+  "4" = "#FFD700" #BNG
+)
+
+congreso_2008_g <- 
+  ggplot(congreso_2008)+
+  geom_parliament(
+    aes(
+      seats = escannos, 
+      fill = siglas,
+      color = siglas)) +
+  scale_fill_manual(values = colores_2008) +
+  scale_color_manual(values = colores_2008) +
+  guides(color = "none", fill = "none") +
+  labs(title = "Congreso de los diputados 2008")
+  coord_fixed()
+```
+
+```{r}
+#| code-fold: true
+congreso_2008_g
+
+
+```
+
+---
+
+```{r}
+#| code-fold: true
+# 2011 #
+
+congreso_2011 <-
+congreso |> 
+           filter(eleccion == "2011")
+
+# congreso_2011 |> 
+#   group_by(siglas) |> 
+#   summarise(escannos) |> 
+#   arrange(escannos)
+
+colores_2011 <- c(
+  "6" = "#1D84CE", # PP
+  "7" = "#FF0000", # SOE
+  "4" = "#6A5ACD", # PNV 
+  "3" = "#808080", # OTRO 
+  "2" = "#FF7F48", # ERC
+  "1" = "#FFD700" #BNG
+)
+
+congreso_2011_g <- 
+  ggplot(congreso_2011)+
+  geom_parliament(
+    aes(
+      seats = escannos, 
+      fill = siglas,
+      color = siglas)) +
+  scale_fill_manual(values = colores_2011) +
+  scale_color_manual(values = colores_2011) +
+  guides(color = "none", fill = "none") +
+  labs(title = "Congreso de los diputados 2011")
+  coord_fixed()
+```
+
+```{r}
+#| code-fold: true
+congreso_2011_g
+
+
+```
+
+---
+
+```{r}
+#| code-fold: true
+# 2015 #
+
+congreso_2015 <-
+congreso |> 
+           filter(eleccion == "2015")
+# 
+# congreso_2015 |> 
+#   group_by(siglas) |> 
+#   summarise(escannos) |> 
+#   arrange(escannos)
+
+colores_2015 <- c(
+  "7" = "#1D84CE", # PP
+  "8" = "#FF0000", # SOE
+  "6" = "#8B008B", # Podemos
+  "1" = "#FF8000", # Cs
+  "4" = "#808080", # OTRO 
+  "3" = "#FF7F48", # ERC
+  "2" = "#6A5ACD", # PNV 
+  "5" = "#006400" #BILDU
+)
+
+congreso_2015_g <- 
+  ggplot(congreso_2015)+
+  geom_parliament(
+    aes(
+      seats = escannos, 
+      fill = siglas,
+      color = siglas)) +
+  scale_fill_manual(values = colores_2015) +
+  scale_color_manual(values = colores_2015) +
+  guides(color = "none", fill = "none") +
+  labs(title = "Congreso de los diputados 2015")
+  coord_fixed()
+```
+
+```{r}
+#| code-fold: true
+congreso_2015_g
+
+```
+
+---
+
+```{r}
+#| code-fold: true
+
+# 2016 #
+
+congreso_2016 <-
+congreso |> 
+           filter(eleccion == "2016")
+
+# congreso_2016 |> 
+#   group_by(siglas) |> 
+#   summarise(escannos) |> 
+#   arrange(escannos)
+
+colores_2016 <- c(
+  "6" = "#1D84CE", # PP
+  "7" = "#FF0000", # SOE
+  "8" = "#FF0000", # SOE, lo repito porque se quedaba un punto gris
+  "5" = "#8B008B", # Podemos
+  "3" = "#FF8000", # Cs
+  "1" = "#808080", # OTRO 
+  "4" = "#6A5ACD", # PNV 
+  "2" = "#006400" #BILDU
+)
+
+congreso_2016_g <- 
+  ggplot(congreso_2016)+
+  geom_parliament(
+    aes(
+      seats = escannos, 
+      fill = siglas,
+      color = siglas)) +
+  scale_fill_manual(values = colores_2016) +
+  scale_color_manual(values = colores_2016) +
+  guides(color = "none", fill = "none") +
+  labs(title = "Congreso de los diputados 2016")
+  coord_fixed()
+  
+```
+
+---
+
+```{r}
+#| code-fold: true
+congreso_2016_g
+```
+
+---
+
+```{r}
+#| code-fold: true
+# "2019 (abril)"  #
+
+congreso_2019a <-
+congreso |> 
+           filter(eleccion == "2019 (abril)" )
+
+# congreso_2019a |> 
+#   group_by(siglas) |> 
+#   summarise(escannos) |> 
+#   arrange(escannos)
+
+colores_2019a <- c(
+  "8" = "#1D84CE", # PP
+  "9" = "#FF0000", # SOE
+  "7" = "#8B008B", # Podemos
+  "2" = "#FF8000", # Cs
+  "5" = "#808080", # OTRO 
+  "6" = "#6A5ACD", # PNV 
+  "3" = "#006400", #BILDU
+  "10" = "#00B140", #VOX
+  "4" = "#FF7F48" # ERC
+)
+
+congreso_2019a_g <- 
+  ggplot(congreso_2019a)+
+  geom_parliament(
+    aes(
+      seats = escannos, 
+      fill = siglas,
+      color = siglas)) +
+  scale_fill_manual(values = colores_2019a) +
+  scale_color_manual(values = colores_2019a) +
+  guides(color = "none", fill = "none") +
+  labs(title = "Congreso de los diputados 2019 (abril)")
+  coord_fixed()
+```
+
+---
+
+```{r}
+#| code-fold: true
+congreso_2019a_g
+
+```
+
+---
+
+```{r}
+#| code-fold: true
+
+# "2019 (noviembre)"  #
+
+congreso_2019n <-
+congreso |> 
+           filter(eleccion == "2019 (noviembre)" )
+
+# congreso_2019n |> 
+#   group_by(siglas) |> 
+#   summarise(escannos) |> 
+#   arrange(escannos)
+
+colores_2019n <- c(
+  "8" = "#1D84CE", # PP
+  "9" = "#FF0000", # SOE
+  "7" = "#8B008B", # Podemos
+  "2" = "#FF8000", # Cs
+  "5" = "#808080", # OTRO 
+  "6" = "#6A5ACD", # PNV 
+  "3" = "#006400", #BILDU
+  "10" = "#00B140", #VOX
+  "4" = "#FF7F48", # ERC
+  "1" = "#FFD700" #BNG
+)
+
+congreso_2019n_g <- 
+  ggplot(congreso_2019n)+
+  geom_parliament(
+    aes(
+      seats = escannos, 
+      fill = siglas,
+      color = siglas)) +
+  scale_fill_manual(values = colores_2019n) +
+  scale_color_manual(values = colores_2019n) +
+  guides(color = "none", fill = "none") +
+  labs(title = "Congreso de los diputados 2019 (noviembre)")
+  coord_fixed()
+```
+
+---
+
+```{r}
+#| code-fold: true
+congreso_2019n_g
+
+```
+
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#| code-fold: true
+
+library(sf) # para importar archivos shapefiles
+library(broom) # Para transformar los archivos shapefiles 
+library(tidyverse)
+
+shapefile_provincias <- st_read("./data/Provincias_ETRS89_30N.shp")
+
+provincias_sf <- st_as_sf(shapefile_provincias)
+
+mas_votado_prov <-
+  tabla_maestra |> 
+  group_by(anno, mes, codigo_provincia, siglas) |> 
+  mutate(votos_partido = sum(votos),
+         eleccion = case_when(
+            anno == 2008 ~ "2008",
+            anno == 2011 ~ "2011",
+            anno == 2015 ~ "2015",
+            anno == 2016 ~ "2016",
+            anno == 2019 & mes == "04" ~ 
+            "2019 (abril)",
+            anno == 2019 & mes == "11" ~ 
+              "2019 (noviembre)")) |> 
+  ungroup() |> 
+  filter(eleccion == "2015") |> 
+  distinct(eleccion, codigo_provincia, siglas, votos_partido) |> 
+  group_by(eleccion, codigo_provincia) |> 
+  mutate(votos_totales = sum(votos_partido)) |> 
+  slice_max(votos_partido) |> 
+  mutate(porc = votos_partido / votos_totales)
+
+mas_votado_prov <-
+  mas_votado_prov |> 
+  mutate(siglas = factor(siglas, levels = c("PP","PSOE","PNV","OTRO","ERC","BNG","PODEMOS-IU","C's","EH-BILDU","VOX"), 
+                         ordered = TRUE))
+
+provincias_sf <- 
+  provincias_sf %>%
+  left_join(mas_votado_prov, by = c("Codigo" = "codigo_provincia"))
+
+head(provincias_sf)
+
+grafico_pais <-
+  ggplot(data = provincias_sf) +
+  geom_sf(aes(fill = siglas, alpha = porc), color = "black") +
+  scale_fill_manual(values = colores_partidos) +  # Escala de colores
+  theme_minimal() +
+  labs(title = "Mapa de España con datos por provincia",
+       fill = "Leyenda")
+```
+
+---
+
+```{r}
+grafico_pais
 ```
 
 ---
