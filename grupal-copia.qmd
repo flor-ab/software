@@ -1038,13 +1038,16 @@ congreso |>
 #   arrange(escannos)
 
 colores_2008 <- c(
-  "8" = "#1D84CE", # PP
-  "9" = "#FF0000", # SOE
-  "6" = "#6A5ACD", # PNV 
-  "7" = "#808080", # OTRO 
-  "5" = "#FF7F48", # ERC
-  "4" = "#FFD700" #BNG
-)
+  "8" = "#17589d", # PP
+  "9" = "#c20e1a", # SOE
+  "6" = "#308444", # PNV 
+  "5" = "#808080", # OTRO 
+  "7" = "#308444", # PNV
+  "10" = "#308444", # PNV
+  "4" = "#FFD700", #ERC
+  "3" = "#76b3dd",
+  "1" = "#76b3dd"
+  )
 
 congreso_2008_g <- 
   ggplot(congreso_2008)+
@@ -1056,15 +1059,39 @@ congreso_2008_g <-
   scale_fill_manual(values = colores_2008) +
   scale_color_manual(values = colores_2008) +
   guides(color = "none", fill = "none") +
-  labs(title = "Congreso de los diputados 2008")
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = "white", color = NA)) +
   coord_fixed()
-```
+  
 
-```{r}
-#| code-fold: true
-congreso_2008_g
+congreso_2008_t <-
+  congreso_2008 |> 
+  filter(eleccion == "2008" ) |> 
+  select(siglas, escannos) |> 
+  arrange(- escannos) |> 
+  filter(escannos > 0)
 
+congreso_2008_tg <- 
+  ggplot(congreso_2008_t, aes(x = 1, y = reorder(siglas, escannos), label = paste(siglas, escannos))) +
+  geom_text(aes(color = siglas), size = 3.5) + # Añadir texto con colores
+  scale_color_manual(values = colores_partidos) + # Usa los colores definidos en la tabla
+  theme_minimal() +
+  guides(color = "none") +
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  )
 
+library(gridExtra)
+library(grid)
+
+grafico_congreso1 <- grid.arrange(congreso_2008_g, congreso_2008_tg, ncol = 2,
+             top = textGrob("2008", gp = gpar(fontsize = 12, fontface = "bold") 
+  ))
 ```
 
 ---
@@ -1083,12 +1110,13 @@ congreso |>
 #   arrange(escannos)
 
 colores_2011 <- c(
-  "6" = "#1D84CE", # PP
-  "7" = "#FF0000", # SOE
-  "4" = "#6A5ACD", # PNV 
+  "6" = "#17589d", # PP
+  "7" = "#c20e1a", # SOE
+  "5" = "#308444", # PNV
+  "4" = "#308444", # PNV 
   "3" = "#808080", # OTRO 
-  "2" = "#FF7F48", # ERC
-  "1" = "#FFD700" #BNG
+  "2" = "#fcc34e", # ERC
+  "1" = "#76b3dd" #BNG
 )
 
 congreso_2011_g <- 
@@ -1100,16 +1128,36 @@ congreso_2011_g <-
       color = siglas)) +
   scale_fill_manual(values = colores_2011) +
   scale_color_manual(values = colores_2011) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = "white", color = NA)) +
   guides(color = "none", fill = "none") +
-  labs(title = "Congreso de los diputados 2011")
   coord_fixed()
-```
+  
 
-```{r}
-#| code-fold: true
-congreso_2011_g
+congreso_2011_t <-
+  congreso_2011 |> 
+  filter(eleccion == "2011" ) |> 
+  select(siglas, escannos) |> 
+  arrange(- escannos) |> 
+  filter(escannos > 0)
 
+congreso_2011_tg <- 
+  ggplot(congreso_2011_t, aes(x = 1, y = reorder(siglas, escannos), label = paste(siglas, escannos))) +
+  geom_text(aes(color = siglas), size = 3.5) + # Añadir texto con colores
+  scale_color_manual(values = colores_partidos) + # Usa los colores definidos en la tabla
+  theme_minimal() +
+  guides(color = "none") +
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  )
 
+grafico_congreso2 <- grid.arrange(congreso_2011_g, congreso_2011_tg, ncol = 2,
+             top = textGrob("2011", gp = gpar(fontsize = 12, fontface = "bold") ))
 ```
 
 ---
@@ -1128,13 +1176,14 @@ congreso |>
 #   arrange(escannos)
 
 colores_2015 <- c(
-  "7" = "#1D84CE", # PP
-  "8" = "#FF0000", # SOE
-  "6" = "#8B008B", # Podemos
-  "1" = "#FF8000", # Cs
+  "7" = "#17589d", # PP
+  "8" = "#c20e1a", # SOE
+  "9" = "#c20e1a", # SOE
+  "6" = "#6b1f5f", # Podemos
+  "1" = "#fb5000", # Cs
   "4" = "#808080", # OTRO 
-  "3" = "#FF7F48", # ERC
-  "2" = "#6A5ACD", # PNV 
+  "3" = "#fcc34e", # ERC
+  "2" = "#1af7db", # PNV 
   "5" = "#006400" #BILDU
 )
 
@@ -1147,15 +1196,38 @@ congreso_2015_g <-
       color = siglas)) +
   scale_fill_manual(values = colores_2015) +
   scale_color_manual(values = colores_2015) +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = "white", color = NA)) +
   guides(color = "none", fill = "none") +
-  labs(title = "Congreso de los diputados 2015")
   coord_fixed()
-```
+  
 
-```{r}
-#| code-fold: true
-congreso_2015_g
 
+congreso_2015_t <-
+  congreso_2015 |> 
+  filter(eleccion == "2015" ) |> 
+  select(siglas, escannos) |> 
+  arrange(- escannos) |> 
+  filter(escannos > 0)
+
+congreso_2015_tg <- 
+  ggplot(congreso_2015_t, aes(x = 1, y = reorder(siglas, escannos), label = paste(siglas, escannos))) +
+  geom_text(aes(color = siglas), size = 3.5) + # Añadir texto con colores
+  scale_color_manual(values = colores_partidos) + # Usa los colores definidos en la tabla
+  theme_minimal() +
+  guides(color = "none") +
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  )
+
+grafico_congreso3 <- grid.arrange(congreso_2015_g, congreso_2015_tg, ncol = 2,
+             top = textGrob("2015", gp = gpar(fontsize = 12, fontface = "bold") 
+  ))
 ```
 
 ---
@@ -1175,14 +1247,14 @@ congreso |>
 #   arrange(escannos)
 
 colores_2016 <- c(
-  "6" = "#1D84CE", # PP
-  "7" = "#FF0000", # SOE
-  "8" = "#FF0000", # SOE, lo repito porque se quedaba un punto gris
-  "5" = "#8B008B", # Podemos
-  "3" = "#FF8000", # Cs
+  "6" = "#17589d", # PP
+  "7" = "#c20e1a", # SOE
+  "8" = "#c20e1a", # SOE, lo repito porque se quedaba un punto gris
+  "5" = "#6b1f5f", # Podemos
+  "3" = "#fb5000", # Cs
   "1" = "#808080", # OTRO 
-  "4" = "#6A5ACD", # PNV 
-  "2" = "#006400" #BILDU
+  "4" = "#308444", # PNV 
+  "2" = "#1af7db" #BILDU
 )
 
 congreso_2016_g <- 
@@ -1195,16 +1267,37 @@ congreso_2016_g <-
   scale_fill_manual(values = colores_2016) +
   scale_color_manual(values = colores_2016) +
   guides(color = "none", fill = "none") +
-  labs(title = "Congreso de los diputados 2016")
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = "white", color = NA)) +
   coord_fixed()
   
-```
 
----
 
-```{r}
-#| code-fold: true
-congreso_2016_g
+congreso_2016_t <-
+  congreso_2016 |> 
+  filter(eleccion == "2016" ) |> 
+  select(siglas, escannos) |> 
+  arrange(- escannos) |> 
+  filter(escannos > 0)
+
+congreso_2016_tg <- 
+  ggplot(congreso_2016_t, aes(x = 1, y = reorder(siglas, escannos), label = paste(siglas, escannos))) +
+  geom_text(aes(color = siglas), size = 3.5) + # Añadir texto con colores
+  scale_color_manual(values = colores_partidos) + # Usa los colores definidos en la tabla
+  theme_minimal() +
+  guides(color = "none") +
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  )
+
+grafico_congreso4 <- grid.arrange(congreso_2016_g, congreso_2016_tg, ncol = 2,
+             top = textGrob("2016", gp = gpar(fontsize = 12, fontface = "bold") ))
+  
 ```
 
 ---
@@ -1223,15 +1316,15 @@ congreso |>
 #   arrange(escannos)
 
 colores_2019a <- c(
-  "8" = "#1D84CE", # PP
-  "9" = "#FF0000", # SOE
-  "7" = "#8B008B", # Podemos
-  "2" = "#FF8000", # Cs
+  "8" = "#17589d", # PP
+  "9" = "#c20e1a", # SOE
+  "7" = "#6b1f5f", # Podemos
+  "2" = "#fb5000", # Cs
   "5" = "#808080", # OTRO 
-  "6" = "#6A5ACD", # PNV 
-  "3" = "#006400", #BILDU
-  "10" = "#00B140", #VOX
-  "4" = "#FF7F48" # ERC
+  "6" = "#308444", # PNV 
+  "3" = "#1af7db", #BILDU
+  "10" = "#5ac035", #VOX
+  "4" = "#fcc34e" # ERC
 )
 
 congreso_2019a_g <- 
@@ -1244,16 +1337,35 @@ congreso_2019a_g <-
   scale_fill_manual(values = colores_2019a) +
   scale_color_manual(values = colores_2019a) +
   guides(color = "none", fill = "none") +
-  labs(title = "Congreso de los diputados 2019 (abril)")
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = "white", color = NA))+
   coord_fixed()
-```
+  
 
----
+congreso_2019a_t <-
+  congreso_2019a |> 
+  filter(eleccion == "2019 (abril)" ) |> 
+  select(siglas, escannos) |> 
+  arrange(- escannos) |> 
+  filter(escannos > 0)
 
-```{r}
-#| code-fold: true
-congreso_2019a_g
+congreso_2019a_tg <- 
+  ggplot(congreso_2019a_t, aes(x = 1, y = reorder(siglas, escannos), label = paste(siglas, escannos))) +
+  geom_text(aes(color = siglas), size = 3) + # Añadir texto con colores
+  scale_color_manual(values = colores_partidos) + # Usa los colores definidos en la tabla
+  theme_minimal() +
+  guides(color = "none") +
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  )
 
+grafico_congreso5 <- grid.arrange(congreso_2019a_g, congreso_2019a_tg, ncol = 2,
+             top = textGrob("2019 abril", gp = gpar(fontsize = 12, fontface = "bold")  ))
 ```
 
 ---
@@ -1273,16 +1385,16 @@ congreso |>
 #   arrange(escannos)
 
 colores_2019n <- c(
-  "8" = "#1D84CE", # PP
-  "9" = "#FF0000", # SOE
-  "7" = "#8B008B", # Podemos
-  "2" = "#FF8000", # Cs
+  "8" = "#17589d", # PP
+  "9" = "#c20e1a", # SOE
+  "7" = "#6b1f5f", # Podemos
+  "2" = "#fb5000", # Cs
   "5" = "#808080", # OTRO 
-  "6" = "#6A5ACD", # PNV 
-  "3" = "#006400", #BILDU
-  "10" = "#00B140", #VOX
-  "4" = "#FF7F48", # ERC
-  "1" = "#FFD700" #BNG
+  "6" = "#308444", # PNV 
+  "3" = "#1af7db", #BILDU
+  "10" = "#5ac035", #VOX
+  "4" = "#fcc34e", # ERC
+  "1" = "#76b3dd" #BNG
 )
 
 congreso_2019n_g <- 
@@ -1295,16 +1407,40 @@ congreso_2019n_g <-
   scale_fill_manual(values = colores_2019n) +
   scale_color_manual(values = colores_2019n) +
   guides(color = "none", fill = "none") +
-  labs(title = "Congreso de los diputados 2019 (noviembre)")
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = "white", color = NA)) +
   coord_fixed()
+  
+congreso_2019n_t <-
+  congreso_2019n |> 
+  filter(eleccion == "2019 (noviembre)" ) |> 
+  select(siglas, escannos) |> 
+  arrange(- escannos)
+
+congreso_2019n_tg <- 
+  ggplot(congreso_2019n_t, aes(x = 1, y = reorder(siglas, escannos), label = paste(siglas, escannos))) +
+  geom_text(aes(color = siglas), size = 3) + # Añadir texto con colores
+  scale_color_manual(values = colores_partidos) + # Usa los colores definidos en la tabla
+  theme_minimal() +
+  guides(color = "none") +
+  theme(
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank()
+  )
+
+grafico_congreso6 <- grid.arrange(congreso_2019n_g, congreso_2019n_tg, ncol = 2,
+             top = textGrob("2019 noviembre", gp = gpar(fontsize = 12, fontface = "bold") ))
 ```
 
 ---
 
 ```{r}
 #| code-fold: true
-congreso_2019n_g
-
+grid.arrange(grafico_congreso1, grafico_congreso2, grafico_congreso3, grafico_congreso4, grafico_congreso5, grafico_congreso6, ncol = 2, nrow = 3)
 ```
 
 ---
