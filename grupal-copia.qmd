@@ -21,10 +21,10 @@ library(glue)
 library(forcats)
 library(lubridate)
 library(waffle)
+library(gganimate)
 ```
 
----
-
+------------------------------------------------------------------------
 
 ## Entrega grupal
 
@@ -41,8 +41,7 @@ surveys <- read_csv(file = "./data/historical_surveys.csv")
 abbrev <- read_csv(file = "./data/siglas.csv")
 ```
 
-
----
+------------------------------------------------------------------------
 
 ## Datos
 
@@ -51,7 +50,7 @@ abbrev <- read_csv(file = "./data/siglas.csv")
 -   `abbrev`: siglas de cada partido
 -   `surveys`: encuestas electorales desde 1982.
 
----
+------------------------------------------------------------------------
 
 ## Datos
 
@@ -64,65 +63,64 @@ abbrev <- read_csv(file = "./data/siglas.csv")
     -   `size`: tamaño muestral de la encuesta
     -   `turnout`: participación (estimación)
 
----
+------------------------------------------------------------------------
 
 ## Objetivos
-
 
 El objetivo de la entrega es [**realizar un análisis de los datos electorales**]{.hl-green}, llevando a cabo la depuración, los resúmenes y los gráficos que consideres necesarios, tanto de los resultados como de la precisión de las encuestas electorales.
 
 En concreto, debes trabajar únicamente en el **período de tiempo que incluye las elecciones desde 2008 hasta las últimas elecciones de 2019**
 
----
+------------------------------------------------------------------------
 
 ## Ítems obligatorios
 
-1. Los datos deben ser convertidos a tidydata donde sea apropiado.
+1.  Los datos deben ser convertidos a tidydata donde sea apropiado.
 
-2. Debes incluir al menos un join entre tablas.
+2.  Debes incluir al menos un join entre tablas.
 
-3. Los paquetes `{glue}`, `{forcats}` y `{lubridate}` deben ser utilizados en algún punto
+3.  Los paquetes `{glue}`, `{forcats}` y `{lubridate}` deben ser utilizados en algún punto
 
-4. Los siguientes elementos deben usarse al menos una vez: mutate, summarise, group_by (o su equivalente), case_when
+4.  Los siguientes elementos deben usarse al menos una vez: mutate, summarise, group_by (o su equivalente), case_when
 
-5. Deberéis definir al menos una función (con más de 5 líneas de código)
-    
----
+5.  Deberéis definir al menos una función (con más de 5 líneas de código)
 
-## Ítems obligatorios
-
-6. Contamos con muchos partidos que se presentan a las elecciones. Solo nos interesarán los siguientes partidos (cuidado: algunos tienen o tenían federaciones - sucursales - con otros nombres):
-
-- PARTIDO SOCIALISTA OBRERO ESPAÑOL
-- PARTIDO POPULAR
-- CIUDADANOS
-- PARTIDO NACIONALISTA VASCO
-- BLOQUE NACIONALISTA GALLEGO
-- UNIDAS PODEMOS - IU (Unidas Podemos, Unidos Podemos, Podemos, IU, Podem, y Ezker Batua).
-- ESQUERRA REPUBLICANA DE CATALUNYA
-- EH - BILDU (ahora son una coalición de partidos formada por lo que antes era Sortu, Eusko Alkartasuna, Aralar, Alternatiba).
-- VOX
-
----
+------------------------------------------------------------------------
 
 ## Ítems obligatorios
 
-7. Todo lo que no esté en alguno de los anteriores partidos debe ser correctamente reagrupado (y resumido) en `OTROS`
+6.  Contamos con muchos partidos que se presentan a las elecciones. Solo nos interesarán los siguientes partidos (cuidado: algunos tienen o tenían federaciones - sucursales - con otros nombres):
 
-8.   Las siglas deben ser usadas en las visualizaciones (ideas en <https://r-graph-gallery.com/>).
+-   PARTIDO SOCIALISTA OBRERO ESPAÑOL
+-   PARTIDO POPULAR
+-   CIUDADANOS
+-   PARTIDO NACIONALISTA VASCO
+-   BLOQUE NACIONALISTA GALLEGO
+-   UNIDAS PODEMOS - IU (Unidas Podemos, Unidos Podemos, Podemos, IU, Podem, y Ezker Batua).
+-   ESQUERRA REPUBLICANA DE CATALUNYA
+-   EH - BILDU (ahora son una coalición de partidos formada por lo que antes era Sortu, Eusko Alkartasuna, Aralar, Alternatiba).
+-   VOX
 
-9. Debes usar todos los archivos en algún momento.
+------------------------------------------------------------------------
 
-10.  Debes descartar las encuestas que:
+## Ítems obligatorios
 
-    -   se refieran a elecciones anteriores a 2008
-    -   sean a pie de urna
-    -   tamaño muestral desconocido o inferior a 500.
-    -   tenga 1 día o menos de trabajo de campo.
+7.  Todo lo que no esté en alguno de los anteriores partidos debe ser correctamente reagrupado (y resumido) en `OTROS`
 
+8.  Las siglas deben ser usadas en las visualizaciones (ideas en <https://r-graph-gallery.com/>).
 
----
+9.  Debes usar todos los archivos en algún momento.
 
+10. Debes descartar las encuestas que:
+
+```         
+-   se refieran a elecciones anteriores a 2008
+-   sean a pie de urna
+-   tamaño muestral desconocido o inferior a 500.
+-   tenga 1 día o menos de trabajo de campo.
+```
+
+------------------------------------------------------------------------
 
 ## Depuración de datos
 
@@ -219,18 +217,18 @@ eleccion_resumen <-
 #write_csv(eleccion_resumen, file = "eleccion_resumen.csv") #Tarda un montón en cargar
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ## Encuestas
 
 Debes descartar las encuestas que:
 
-    -   se refieran a elecciones anteriores a 2008
-    -   sean a pie de urna
-    -   tamaño muestral desconocido o inferior a 500.
-    -   tenga 1 día o menos de trabajo de campo.
+```         
+-   se refieran a elecciones anteriores a 2008
+-   sean a pie de urna
+-   tamaño muestral desconocido o inferior a 500.
+-   tenga 1 día o menos de trabajo de campo.
+```
 
 ```{r}
 #| code-fold: true
@@ -270,9 +268,7 @@ surveys_tidy <-
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -306,9 +302,7 @@ tabla_maestra <-
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -338,8 +332,7 @@ datos_p1 <-
 
 ```
 
-
----
+------------------------------------------------------------------------
 
 # Primera pregunta
 
@@ -370,7 +363,8 @@ ggplot(datos_p1, aes(fill = siglas, values = n)) +
     panel.grid = element_blank())
 
 ```
----
+
+------------------------------------------------------------------------
 
 # Segunda pregunta
 
@@ -436,7 +430,7 @@ ggplot(datos_p2_a, aes(fill = siglas_seg, values = n)) +
     panel.grid = element_blank())
 ```
 
----
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -494,7 +488,7 @@ ggplot(datos_p2_b, aes(fill = siglas_seg, values = n)) +
     panel.grid = element_blank())
 ```
 
----
+------------------------------------------------------------------------
 
 # Tercera pregunta
 
@@ -573,7 +567,7 @@ grafico_resultados_elecciones <-
 grafico_resultados_elecciones
 ```
 
----
+------------------------------------------------------------------------
 
 Podemos ver que los resultados de las encuestas se suelen desviar entre cero con algo y 2 puntos porcentuales
 
@@ -636,7 +630,7 @@ grafico_comparacion_partido <-
 grafico_comparacion_partido
 ```
 
----
+------------------------------------------------------------------------
 
 Parece que hay algunas empresas encuestadoras que se desvían más que otras, ver cómo poner este gráfico por años
 
@@ -657,4 +651,268 @@ grafico_comparacion_pollster <-
 grafico_comparacion_pollster
 ```
 
----
+------------------------------------------------------------------------
+
+# PREGUNTA 4
+
+------------------------------------------------------------------------
+
+### ¿Relación entre censo y voto?
+
+```{r}
+#| code-fold: true
+tabla_pg4 <- 
+  tabla_maestra |>
+  # Votos totales por población
+  group_by(anno, mes, codigo_ccaa, codigo_provincia, codigo_municipio, cod_poblacion) |>
+  summarise(votos_totales = sum(votos)) |>
+  distinct(anno, codigo_ccaa, codigo_provincia, codigo_municipio, cod_poblacion, votos_totales)
+
+tabla_pg4_censo <-
+  tabla_maestra |> 
+  distinct(anno, mes, codigo_ccaa, codigo_provincia, codigo_municipio, cod_poblacion, censo)
+
+tabla_pg4_censoxvotos <-
+  left_join(x = tabla_pg4_censo, 
+            y = tabla_pg4, 
+            by = c("anno" = "anno", 
+                   "mes" = "mes",
+                   "codigo_ccaa" = "codigo_ccaa",
+                   "codigo_provincia" = "codigo_provincia",
+                   "codigo_municipio" = "codigo_municipio",
+                   "cod_poblacion" = "cod_poblacion")) |> 
+  group_by(anno, mes, codigo_ccaa) |> 
+  summarise(censo_tot = sum(censo), votos_tot = sum(votos_totales)) |> 
+  mutate(
+    porc = votos_tot / censo_tot,
+    comunidad_autonoma = case_when(
+      codigo_ccaa == "01" ~ "Andalucia",
+      codigo_ccaa == "02" ~ "Aragon",
+      codigo_ccaa == "03" ~ "Asturias",
+      codigo_ccaa == "04" ~ "Baleares",
+      codigo_ccaa == "05" ~ "Canarias",
+      codigo_ccaa == "06" ~ "Cantabria",
+      codigo_ccaa == "07" ~ "Castilla y Leon",
+      codigo_ccaa == "08" ~ "Castilla La Mancha",
+      codigo_ccaa == "09" ~ "Cataluña",
+      codigo_ccaa == "10" ~ "Comunidad Valenciana",
+      codigo_ccaa == "11" ~ "Extremadura",
+      codigo_ccaa == "12" ~ "Galicia",
+      codigo_ccaa == "13" ~ "Comunidad de Madrid",
+      codigo_ccaa == "14" ~ "Murcia",
+      codigo_ccaa == "15" ~ "Navarra",
+      codigo_ccaa == "16" ~ "País Vasco",
+      codigo_ccaa == "17" ~ "La Rioja",
+      codigo_ccaa == "18" ~ "Ceuta",
+      TRUE ~ "Melilla"
+    )
+  )
+
+# Graficar los datos
+ggplot(tabla_pg4_censoxvotos) +
+  geom_line(aes(x = anno, y = porc, color = comunidad_autonoma), size = 0.7, alpha = 0.8) +
+  scale_x_continuous(
+    breaks = seq(2007, 2020, by = 1), 
+    labels = seq(2007, 2020, by = 1)
+  ) +
+  scale_color_viridis_d() + 
+  labs(
+    title = "Relación entre Votos Totales y Censo Total por Comunidad Autónoma",
+    x = "Año",
+    y = "Porcentaje de Votos sobre Censo",
+    color = "Comunidad Autónoma"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 9)
+  )
+
+
+```
+
+Se observa como el porcentaje de votos respecto al censo fue disminuyendo alrededor del 2015 para la mayoría de comunidades, seguido de una recuperacíon en los años posteriores (hacia 2017-2018).
+
+Las comunidades tienen diferentes niveles de participación. Algunas mantienen un porcentaje más alto (cerca del 80%), mientras que otras caen a valores significativamente más bajos (alrededor del 50% en algunos años).
+
+------------------------------------------------------------------------
+
+## Evolución del Porcentaje de Voto en Relación al Censo por Comunidad Autónoma
+
+```{r}
+#| code-fold: true
+#animación gráfico
+tabla_pg4_censoxvotos <- tabla_pg4_censoxvotos |> 
+  mutate(anno = as.integer(anno))
+
+# Crear el gráfico animado
+gplot <- ggplot(tabla_pg4_censoxvotos) +
+  aes(x = anno, y = porc, color = comunidad_autonoma) +
+  geom_line(aes(linetype = as.factor(codigo_ccaa)), size = 0.7, alpha = 0.8) +
+  scale_x_continuous(
+    breaks = seq(2007, 2020, by = 1), 
+    labels = seq(2007, 2020, by = 1)
+  ) +
+  scale_color_viridis_d() +
+  labs(
+    title = "Relación entre Censo y Voto",
+    x = "Año", 
+    y = "Porcentaje de Voto",
+    color = "Comunidad Autónoma"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 9)
+  ) +
+  transition_reveal(anno) +
+  ease_aes('linear')
+
+anim_save("Relación_Censo_Voto.gif", gplot)
+```
+
+------------------------------------------------------------------------
+
+```{r}
+#| code-fold: true
+# Crear tabla con votos totales por población
+tabla_pg4 <- 
+  tabla_maestra |>
+  group_by(anno, mes, codigo_ccaa, codigo_provincia, codigo_municipio, cod_poblacion) |>
+  summarise(votos_totales = sum(votos)) |>
+  distinct(anno, codigo_ccaa, codigo_provincia, codigo_municipio, cod_poblacion, votos_totales)
+
+# Crear tabla con el censo
+tabla_pg4_censo <- 
+  tabla_maestra |> 
+  distinct(anno, mes, codigo_ccaa, codigo_provincia, codigo_municipio, cod_poblacion, censo)
+
+# Unir las dos tablas y calcular porcentaje de votos sobre censo
+tabla_pg4_censoxvotos <- 
+  left_join(x = tabla_pg4_censo, 
+            y = tabla_pg4, 
+            by = c("anno" = "anno", 
+                   "mes" = "mes",
+                   "codigo_ccaa" = "codigo_ccaa",
+                   "codigo_provincia" = "codigo_provincia",
+                   "codigo_municipio" = "codigo_municipio",
+                   "cod_poblacion" = "cod_poblacion")) |> 
+  group_by(anno, mes, codigo_ccaa) |> 
+  summarise(censo_tot = sum(censo), votos_tot = sum(votos_totales)) |> 
+  mutate(porc = votos_tot / censo_tot,
+         comunidad_autonoma = case_when(
+           codigo_ccaa == "01" ~ "Andalucia",
+           codigo_ccaa == "02" ~ "Aragon",
+           codigo_ccaa == "03" ~ "Asturias",
+           codigo_ccaa == "04" ~ "Baleares",
+           codigo_ccaa == "05" ~ "Canarias",
+           codigo_ccaa == "06" ~ "Cantabria",
+           codigo_ccaa == "07" ~ "Castilla y Leon",
+           codigo_ccaa == "08" ~ "Castilla La Mancha",
+           codigo_ccaa == "09" ~ "Catalunya",
+           codigo_ccaa == "10" ~ "Comunidad Valenciana",
+           codigo_ccaa == "11" ~ "Extremadura",
+           codigo_ccaa == "12" ~ "Galicia",
+           codigo_ccaa == "13" ~ "Comunidad de Madrid",
+           codigo_ccaa == "14" ~ "Murcia",
+           codigo_ccaa == "15" ~ "Navarra",
+           codigo_ccaa == "16" ~ "Pais Vasco",
+           codigo_ccaa == "17" ~ "La Rioja",
+           codigo_ccaa == "18" ~ "Ceuta",
+           TRUE ~ "Melilla"
+         )) |> 
+  group_by(codigo_ccaa) |> 
+  mutate(mean_porc = mean(porc),
+         tipos_ccaa = case_when(
+           mean_porc > 0.74 ~ "Porc > 0.73",
+           mean_porc > 0.71 ~ "Porc > 0.71 y < 0.73",
+           mean_porc > 0.6 ~ "Porc > 0.6 y < 0.71",
+           TRUE ~ "Porc <= 0.6"
+         ))
+
+# Graficar los datos
+ggplot(tabla_pg4_censoxvotos) +
+  geom_line(aes(x = anno, y = porc, color = comunidad_autonoma), size = 1, alpha = 0.8) +
+  scale_x_continuous(
+    breaks = seq(2007, 2018, by = 3), 
+    labels = seq(2007, 2018, by = 3)
+  ) +
+  scale_color_viridis_d() +  # Utilizar la paleta viridis
+  labs(
+    title = "Relación entre Censo y Voto por Comunidad Autónoma",
+    x = "Año", 
+    y = "Porcentaje de Voto",
+    color = "Comunidad Autónoma"
+  ) +
+  facet_wrap(~ tipos_ccaa) +  # Dividir en facetas por tipo de porcentaje
+  theme_minimal() +
+  theme(
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 9)
+  )
+
+```
+
+Se observan disparidades en la participación electoral por comunidad autónoma, con Ceuta y Melilla (\<60 %) en el nivel más bajo y comunidades como La Rioja y País Vasco (\> 70%) en el más alto.
+
+Las regiones con menor participación muestran cierta recuperación hacia 2018, mientras que las comunidades con alta participación mantienen estabilidad a lo largo del tiempo.
+
+------------------------------------------------------------------------
+
+### Diferencia entre zonas rurales de urbanas.
+
+```{r}
+#| code-fold: true
+#diferenciar zonas rurales de urbanas
+tabla_maestra <- tabla_maestra |> 
+  mutate(zona = case_when(
+    censo < 10000 ~ "rural",  
+    TRUE ~ "urbano"
+  ))
+
+resultados_rurales <- tabla_maestra |> 
+  filter(zona == "rural") |> 
+  group_by(siglas) |> 
+  summarise(votos_totales = sum(votos)) |> 
+  mutate(porcentaje_votos_rural = (votos_totales / sum(votos_totales)) * 100)
+
+resultados_urbanos <- tabla_maestra |> 
+  filter(zona == "urbano") |> 
+  group_by(siglas) |> 
+  summarise(votos_totales = sum(votos)) |> 
+  mutate(porcentaje_votos_urbana = (votos_totales / sum(votos_totales)) * 100)
+
+resultados_comparados <- resultados_rurales |> 
+  inner_join(resultados_urbanos, by = "siglas") |> 
+  select(siglas, porcentaje_votos_rural, porcentaje_votos_urbana) |> 
+  mutate(votos_totales = porcentaje_votos_rural + porcentaje_votos_urbana)
+
+resultados_top10 <- resultados_comparados |> 
+  arrange(desc(votos_totales)) |> 
+  head(10)
+
+datos_procesados <- resultados_top10 |> 
+  pivot_longer(cols = c(porcentaje_votos_rural, porcentaje_votos_urbana), 
+               names_to = "zona", 
+               values_to = "porcentaje_votos")
+#graficar
+datos_procesados |> 
+  ggplot(aes(x = reorder(siglas, -porcentaje_votos), y = porcentaje_votos, fill = zona)) +
+  geom_bar(stat = "identity", position = position_dodge()) + 
+  scale_fill_manual(values = c("#D2691E", "#B4CDCD"),
+                    labels = c("Rural", "Urbana")) + 
+  labs(
+    title = "Distribución del Voto por Zonas: Rural vs Urbana",
+    x = "Partido",
+    y = "Porcentaje de votos",
+    fill = "Zona",
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "right")
+
+```
+
+La diferencia entre las zonas rurales y urbanas no parece ser tan marcada en términos generales
+
+Mientras los partidos como PP y PSOE tienen una fuerte presencia en ambas zonas, en las zonas rurales el PP obtiene una ligera ventaja. En cambio, partidos más pequeños como VOX o ERC tienen una representación más significativa en ciertas áreas específicas, pero no dominan ninguna zona.
