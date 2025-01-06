@@ -41,6 +41,4 @@ El modelo tiene un ajuste bastante bueno, con un R-cuadrado de 0.6788, lo que su
 
 - Se filtraron los datos para incluir únicamente las zonas clasificadas como "rural" y "semi_rural". Luego, se calcularon los porcentajes de votos por partido en estas zonas, agrupando los datos por partido y sumando los votos totales para cada uno. Posteriormente, se calculó el porcentaje de votos que representa cada partido sobre el total de votos en las zonas rurales.
 
-De manera similar, se filtraron los datos para las zonas urbanas y se repitió el proceso de cálculo de porcentajes de votos por partido. Finalmente, se combinaron los resultados de ambas zonas para comparar directamente los porcentajes de votos por partido entre zonas rurales y urbanas.
 
-El análisis reveló diferencias significativas en las preferencias electorales entre las zonas rurales y urbanas, proporcionando una visión clara de cómo varía el apoyo a los partidos según la zona. Estos resultados son fundamentales para entender las dinámicas electorales y pueden ser utilizados para diseñar estrategias de campaña más efectivas y dirigidas a las necesidades y preferencias específicas de cada zona.
