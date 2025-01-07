@@ -42,7 +42,7 @@ library(grid)
 library(gganimate)
 ```
 
----
+------------------------------------------------------------------------
 
 ### Datos empleados
 
@@ -50,7 +50,7 @@ library(gganimate)
 -   `cod_mun`: archivo con los códigos y nombres de cada municipio
 -   `abbrev`: siglas de cada partido
 -   `surveys`: encuestas electorales desde 1982.
--   `escannos_provincia_anno`: número de  escaños por provincia y año
+-   `escannos_provincia_anno`: número de escaños por provincia y año
 -   `shapefile_provincias`: mapa de cada provincia
 
 ```{r}
@@ -63,7 +63,7 @@ abbrev <- read_csv(file = "./data/siglas.csv")
 escannos_provincia_anno <- read_csv("data/escannos_provincia_anno.csv")
 ```
 
----
+------------------------------------------------------------------------
 
 ## Depuración de datos {.panel-tabset}
 
@@ -71,21 +71,21 @@ Datos únicamente del **período de tiempo que incluye las elecciones desde 2008
 
 Solo nos interesarán los siguientes partidos:
 
-    -   PARTIDO SOCIALISTA OBRERO ESPAÑOL
-    -   PARTIDO POPULAR
-    -   CIUDADANOS
-    -   PARTIDO NACIONALISTA VASCO
-    -   BLOQUE NACIONALISTA GALLEGO
-    -   UNIDAS PODEMOS - IU
-    -   ESQUERRA REPUBLICANA DE CATALUNYA
-    -   EH - BILDU 
-    -   VOX
+```         
+-   PARTIDO SOCIALISTA OBRERO ESPAÑOL
+-   PARTIDO POPULAR
+-   CIUDADANOS
+-   PARTIDO NACIONALISTA VASCO
+-   BLOQUE NACIONALISTA GALLEGO
+-   UNIDAS PODEMOS - IU
+-   ESQUERRA REPUBLICANA DE CATALUNYA
+-   EH - BILDU 
+-   VOX
+```
 
+------------------------------------------------------------------------
 
----
-
-
-### Convertir a tidy data 
+### Convertir a tidy data
 
 ```{r}
 #| code-fold: true
@@ -108,16 +108,16 @@ tabla <- eleccion_tidy |>
 tabla
 
 ```
+
 Datos de 6 elecciones nacionales: 2008,2011,2015,2016,2019 (abril) y 2019 (noviembre).
 
----
+------------------------------------------------------------------------
 
+### Depuración nombres de partidos
 
-### Depuración nombres de partidos 
+Creación de una función para depurar los nombres de los partidos y reagrupar los demás partidos en la categoría "Otros".
 
-Creación de una función para depurar los nombres de los partidos y reagrupar los demás partidos en la categoría "Otros". 
-
-```{r} 
+```{r}
 #| code-fold: true
 nombres_partidos <- c("PARTIDO SOCIALISTA OBRERO ESPAÑOL","PARTIDO POPULAR", "CIUDADANOS", "PARTIDO NACIONALISTA VASCO", "BLOQUE NACIONALISTA GALLEGO", "UNIDAS PODEMOS - IU", "ESQUERRA REPUBLICANA DE CATALUNYA",  "EH - BILDU", "VOX")
 
@@ -180,17 +180,18 @@ eleccion_resumen <-
 
 ```
 
----
-
+------------------------------------------------------------------------
 
 ### Encuestas
 
 Debes descartar las encuestas que:
 
-    -   se refieran a elecciones anteriores a 2008
-    -   sean a pie de urna
-    -   tamaño muestral desconocido o inferior a 500.
-    -   tenga 1 día o menos de trabajo de campo.
+```         
+-   se refieran a elecciones anteriores a 2008
+-   sean a pie de urna
+-   tamaño muestral desconocido o inferior a 500.
+-   tenga 1 día o menos de trabajo de campo.
+```
 
 ```{r}
 #| code-fold: true
@@ -224,11 +225,9 @@ surveys_tidy <-
 
 ```
 
+------------------------------------------------------------------------
 
----
-
-
-### Creación de tabla maestra 
+### Creación de tabla maestra
 
 Tabla maestra que contiene nombres de municipios, sus códigos y las siglas de cada partido.
 
@@ -259,9 +258,7 @@ tabla_maestra <-
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ## Resultados generales de las elecciones
 
@@ -347,9 +344,7 @@ grafico_resultados_elecciones <-
 grafico_resultados_elecciones
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ```{r, message=FALSE, warning=FALSE}
 #| code-fold: true
@@ -471,10 +466,7 @@ grid.arrange(grafico_pais_08, grafico_pais_15 , grafico_pais_19, ncol = 3, nrow 
 
 ```
 
-
----
-
-
+------------------------------------------------------------------------
 
 ## [Votos a candidatura en los municipios grandes]{.hl-green}
 
@@ -483,7 +475,6 @@ grid.arrange(grafico_pais_08, grafico_pais_15 , grafico_pais_19, ncol = 3, nrow 
 -   Se escogen los partidos más votados por municipio en cada elección
 
 -   Se contabiliza en cuántos municipios gana cada partido
-
 
 ```{r}
 #| code-fold: true
@@ -530,9 +521,7 @@ plot_p1 <- ggplot(datos_p1, aes(fill = siglas, values = n)) +
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -541,15 +530,11 @@ plot_p1
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ### ¿Qué partido fue el segundo cuando el primero fue el PSOE? ¿Y cuando el primero fue el PP?
 
 En la mayoría de municipios grandes gana el PP o el PSOE, ¿son siemore los partidos más populares?
-
-
 
 ```{r}
 #| code-fold: true
@@ -683,9 +668,7 @@ plot_p2_b <- datos_p2_b |>
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -693,9 +676,7 @@ plot_p2_b <- datos_p2_b |>
 grid.arrange(plot_p2_a, plot_p2_b, ncol = 2)
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ## Parte 3
 
@@ -776,9 +757,7 @@ ggplot(tabla_pg4_censoxvotos) +
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ## Parte 3: Evolución del Porcentaje de Voto en Relación al Censo por Comunidad Autónoma
 
@@ -964,9 +943,7 @@ grid.arrange(grafica_menos65, grafica_menos71, grafica_menos73, grafica_mas73, n
 #Las regiones con menor participación muestran cierta recuperación hacia 2018, mientras que las comunidades con alta participación mantienen estabilidad a lo largo del tiempo.
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ## Parte 3: ¿Es cierto que determinados partidos ganan en las zonas rurales?
 
@@ -1018,6 +995,7 @@ datos_rurales |>
 
 ## Se observa como el PP es el partido dominante en las zonas rurales
 ```
+
 ```{r}
 #| code-fold: true
 # Crear la tabla con el número de municipios ganados por cada partido
@@ -1029,7 +1007,6 @@ tabla_partidos_rurales <- datos_rurales |>
 tabla_partidos_rurales
 
 ```
-
 
 ```{r}
 #| code-fold: true
@@ -1055,9 +1032,7 @@ datos_rurales |>
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ## Parte 4
 
@@ -1121,7 +1096,6 @@ comparacion <-
   drop_na(eleccion)
 ```
 
-
 ```{r}
 #| code-fold: true
 # Propuesta 0 : caja y bigotes
@@ -1140,9 +1114,7 @@ grafico_comparacion_partido <-
 grafico_comparacion_partido
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 (Para eliminar)
 
@@ -1174,9 +1146,7 @@ ggplot(error_positivo_negativo) +
     theme(axis.text.y = element_text(size = 7))
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 Para eliminar
 
@@ -1223,9 +1193,7 @@ ggplot(comparacion_filtro, aes(x = pollster, y = error_real)) +
   coord_flip()
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -1257,12 +1225,9 @@ ggplot(comparacion_filtro3, aes(x = eleccion, y = promedio_error)) +
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 Parece que hay algunas empresas encuestadoras que se desvían más que otras, ver cómo poner este gráfico por años
-
 
 (Para eliminar)
 
@@ -1286,9 +1251,7 @@ grafico_comparacion_pollster
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ## Parte 4
 
@@ -1331,9 +1294,7 @@ ggplot(participacion_actual, aes(x = year_month, y = participacion_rate_actual))
   )
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -1368,9 +1329,7 @@ ggplot(survey_participacion_month, aes(x = year_month, y = turnout_mean)) +
 
 ```
 
-
----
-
+------------------------------------------------------------------------
 
 ```{r}
 #| code-fold: true
@@ -1398,17 +1357,39 @@ ggplot(participacion_diff, aes(x = year_month, y = participacion_diff)) +
   )
 ```
 
+------------------------------------------------------------------------
 
----
+## [**Resultados en el Congreso de los Diputados**]{.hl-green}
+
+El Congreso de los Diputados en España se encarga de debatir y redactar las leyes que se implementan en el país
+
+-   **350 diputados**
+
+-   52 **circunscripciones electorales**: 50 provincias + 2 ciudades autónomas (Ceuta y Melilla)
+
+------------------------------------------------------------------------
+
+### Reparto de escaños por circunscripción:
 
 
-## Parte 5
-¿Cómo se distribuyeron los escaños en cada elección?
+
+-   Ceuta y Melilla $\rightarrow$ 1 escaño cada una
+
+-   El resto de circunscripciones electorales $\rightarrow$ como mínimo 2 escaños
+
+Con esto tenemos ya repartidos 102 escaños.
 
 
-```{r}
+<span style="color: orange;">*¿Cómo repartimos los 248 restantes?*</span>
+
+------------------------------------------------------------------------
+
+Se utiliza un reparto **proporcional a la población**, de forma que tenemos la siguiente distribución de escaños por provincias:
+
+```{r, echo=FALSE}
 #| code-fold: true
-# Preparación para gráfico escaños
+
+# Preparación de los datos para los escaños
 
 datos_elecciones_provincia <- 
   tabla_maestra |>
@@ -1443,16 +1424,6 @@ datos_partido_provincia <-
               "2019 (noviembre)")) |> 
   ungroup() |> 
   distinct(anno, eleccion, codigo_provincia, partido, votos_partido) 
-  #left_join(datos_elecciones_provincia, by = c("eleccion" = "eleccion", "codigo_provincia" = "codigo_provincia")) |> 
-  #mutate(porc_votos_validos = round(votos_partido / (votos_candidaturas + votos_blancos), 2)) # % votos de la provincia
-  #filter(porc_votos_validos >= 0.03)   # Para participar en D'Hondt 
-
-
-# datos_partido_provincia |> 
-#   group_by(eleccion, partido) |> 
-#   summarise(suma = sum(votos_partido)) |> 
-#   ungroup() |> 
-#   write.csv(file="votos_partidos.csv")
 
 
 # Importamos el número de escaños por provincia y año
@@ -1522,85 +1493,219 @@ datos_provincia_escannos <-
   left_join(escannos_provincia_anno, by = c("anno" = "Año", "codigo_provincia" = "codigo_provincia")) |> 
   select(eleccion, codigo_provincia, partido, votos_partido, "Número de escaños")
 
+orden_provincias_escannos <-
+  escannos_provincia_anno |> 
+  filter(Año == 2019) |> 
+  distinct(Provincia, `Número de escaños`) |> 
+  arrange(`Número de escaños`) |> 
+  select(Provincia) |> 
+  pull()
+
+
+# Gráfico distribución escaños por provincia (agg): Tenemos un conteo de cuántas provincias tienen cada escaño
+
+graf_escannos_prov_t <-   
+  escannos_provincia_anno |> 
+  filter(Año == 2019) |> 
+  mutate(Provincia = factor(Provincia, levels = orden_provincias_escannos, ordered = TRUE)) |> 
+  group_by(`Número de escaños`) |> 
+  summarise(cantidad = n())
+
+ mediana <- 
+   escannos_provincia_anno |> 
+  filter(Año == 2019) |> 
+   summarise(mediana = median(`Número de escaños`)) |> 
+   pull()
+
+# Graficar el histograma con la línea de la mediana
+graf_escannos_prov <- 
+  ggplot(graf_escannos_prov_t, aes(x = `Número de escaños`, y = cantidad)) +
+  geom_bar(stat = "identity", fill = "#064622", alpha = 0.6) +
+  geom_vline(xintercept = mediana, linetype = "dashed", color = "#064622", size = 1) +
+  annotate("text", x = mediana, y = max(graf_escannos_prov_t$cantidad), 
+           label = paste("Mediana:", mediana, "escaños"), color = "#064622", vjust = -0.5) +
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    strip.text = element_text(face = "bold",
+                              size =9),
+    plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10)),
+    panel.grid = element_blank()) +
+  scale_y_continuous(breaks = seq(0, max(graf_escannos_prov_t$cantidad), by = 1)) +
+  labs(title = "Número de provincias / Número de escaños",
+    x = "Núm. escaños",
+    y = "Núm. provincias")
+
+graf_escannos_prov
+```
+
+------------------------------------------------------------------------
+
+Y si entramos al detalle, provincia a provincia:
+
+```{r, echo=FALSE}
+
+# Gráfico distribución de los escaños por provincia, separamos de acuerdo a la mediana del gráfico anterior
+
+# Mas de 5 escaños
+
+grafico_escannos_provincia_mas5 <-
+  escannos_provincia_anno |> 
+  filter(Año == 2019 & `Número de escaños` > 5) |> 
+  mutate(Provincia = factor(Provincia, levels = orden_provincias_escannos, ordered = TRUE)) |> 
+  ggplot() +
+  geom_col(aes(x = Provincia, y = `Número de escaños`), size = 1, fill = "#064622", alpha = 0.55) +
+  coord_flip() +
+    theme_minimal() +
+  guides(color = "none") +
+  labs(subtitle = "Más de 5 escaños") +
+  theme(panel.grid = element_blank(),
+        axis.title = element_blank(),
+        axis.text.y = element_text(size = 7, face = "bold"),
+        plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10)),
+        plot.subtitle = element_text(hjust = 0.5))
+
+# Menos de 5 escaños
+
+grafico_escannos_provincia_menos5 <-
+  escannos_provincia_anno |> 
+  filter(Año == 2019 & `Número de escaños` <= 5) |> 
+  mutate(Provincia = factor(Provincia, levels = orden_provincias_escannos, ordered = TRUE)) |> 
+  ggplot() +
+  geom_col(aes(x = Provincia, y = `Número de escaños`), size = 1, fill = "#064622", alpha = 0.55) +
+  coord_flip() +
+    theme_minimal() +
+  guides(color = "none") +
+  labs(subtitle = "Menos de 5 escaños") +
+  theme(panel.grid = element_blank(),
+        axis.title = element_blank(),
+        axis.text.y = element_text(size = 7, face = "bold"),
+        plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10)),
+        plot.subtitle = element_text(hjust = 0.5))
+
+
+grid.arrange(grafico_escannos_provincia_mas5, grafico_escannos_provincia_menos5, ncol = 2, 
+             top = textGrob("Escaños por circunscripción electoral
+                            ", gp = gpar(fontsize = 14, fontface = "bold", hjust = 0.5)))
+
+
+```
+
+Ahora bien, ¿cómo se asignan estos escaños a los partidos en cada circunscripción?
+
+---
+
+# SISTEMA D'HONDT
+
+<div style="text-align: center;">
+![](images/clipboard-1347468649.png)
+</div>
+
+Este sistema es un **método de asignación de escaños** en sistemas de representación proporcional
+
+---
+
+### Sistema D´Hondt: ¿Cómo funciona?
+
+-   Se realiza el algoritmo para *cada circunscripción*
+
+-   Los partidos deben de tener como *mínimo el 3%* de votos válidos de la circunscripción
+
+-   Asignación mediante el cálculo de **cocientes sucesivos**
+
+$$cociente_{ij} = \frac{\text{votos del partido}_{i}}{escaño_{j}}$$ 
+
+Donde el <span style="color: orange;">índice $i$ varía desde 1 hasta el número total de partidos en la circunscripción</span> (que cumplen la norma anterior)
+
+Y el <span style="color: orange;">índice $j$ varía desde 1 hasta el número de escaños a asignar en la provincia</span>
+
+Veamos un ejemplo sencillo
+
+------------------------------------------------------------------------
+
+Supongamos que nos encontramos en una circunscripción a la que tenemos que asignar 3 escaños, y tenemos 3 partidos con los siguientes votos:
+
+![](images/clipboard-1848552451.png)
+
+Tenemos que dividir los votos de los partidos entre todos los números entre 1 y el número de escaños, que son 1, 2 y 3.
+
+Una vez tenemos estos cocientes, se seleccionan tantas casillas como escaños podemos asignar, de forma que las casillas seleccionadas son las que tienen <span style="color: orange;">cocientes más altos (señaladas en naranja)</span>.
+
+---
+
+Hemos creado una función para poder replicar este algoritmo con los datos de nuestras elecciones y los datos de los escaños que hemos importado previamente.
+
+```{r}
+
 ## Función D'Hondt
 dHondt <- function(votos, partidos, escaños) {
-  
   # Formato tibble
   tabla <- tibble(partido = partidos, votos = votos)
-  
   # Divisores
   divisores <- rep(1, length(votos))
   escaños_asignados <- integer(length(votos))
-  
   # Tenemos que repetir el proceso por escaños
   for (i in 1:escaños) {
     # Máximo cociente
     cocientes <- votos / divisores
     max_index <- which.max(cocientes)
     escaños_asignados[max_index] <- escaños_asignados[max_index] + 1
-    divisores[max_index] <- divisores[max_index] + 1
-  }
-  
+    divisores[max_index] <- divisores[max_index] + 1}
   # Resultado final
   resultado <- tibble(
     partido = partidos,
-    escaños = escaños_asignados
-  )
-  
+    escaños = escaños_asignados)
   return(resultado)
 }
 
-
-## Función DHondt por provincias
+## Función D'Hondt 2: ahora es personal 
+# (por provincias y elecciones)
 
 dHondt_provincias <- function(tibble) {
-  
   # Inicializamos los resultados
   resultados_dhondt <- tibble()
-  
   # Por cada elección de las que tenemos
   for (elec in unique(tibble$eleccion)) {
     # Filtrar por elección actual
     tibble_funcion <- 
       tibble |> 
       filter(eleccion == elec)
-    
     # Por cada provincia, ya que cada una tiene unos escaños
     for (provin in unique(tibble_funcion$codigo_provincia)) {
       # Filtrar por provincia actual
       tibble_funcion2 <- 
         tibble_funcion |> 
         filter(codigo_provincia == provin)
-      
       # Aplicamos la función de antes
       resultados <- 
         dHondt(
         votos = tibble_funcion2$votos_partido, 
         partidos = tibble_funcion2$partido, 
-        escaños = unique(tibble_funcion2$`Número de escaños`)
-      )
-      
+        escaños = unique(tibble_funcion2$`Número de escaños`))
       # Añadimos qué elección es y provincia
       resultados <- 
         resultados |> 
         mutate(eleccion = elec, 
                codigo_provincia = provin)
-      
       # Añadimos a la inicialización
-      resultados_dhondt <- bind_rows(resultados_dhondt, resultados)
-    }
-  }
-  
-  return(resultados_dhondt)
-}
+      resultados_dhondt <- bind_rows(resultados_dhondt, resultados)}}
+  return(resultados_dhondt)}
 
 resultado_dhondt <-
   dHondt_provincias(datos_provincia_escannos) 
-# |> 
-#   group_by(eleccion, partido) |> 
-#   summarise(sum(escaños)) |> 
-#   write.csv(file = "escaños_partidos.csv")
+```
 
+------------------------------------------------------------------------
+
+Aplicamos esta función para obtener los resultados del congreso de cada elección general
+
+```{r, include=FALSE}
 
 congreso <- 
   resultado_dhondt |> 
@@ -1633,8 +1738,7 @@ congreso <-
 
 ```
 
-
-```{r}
+```{r, results='hide', fig.show="hide"}
 #| code-fold: true
 ## Gráfico de congreso
 
@@ -1707,11 +1811,7 @@ grafico_congreso1 <- grid.arrange(congreso_2008_g, congreso_2008_tg, ncol = 2,
   ))
 ```
 
-
----
-
-
-```{r}
+```{r, include=FALSE}
 #| code-fold: true
 # 2011 #
 
@@ -1775,11 +1875,7 @@ grafico_congreso2 <- grid.arrange(congreso_2011_g, congreso_2011_tg, ncol = 2,
              top = textGrob("2011", gp = gpar(fontsize = 12, fontface = "bold") ))
 ```
 
-
----
-
-
-```{r}
+```{r, include=FALSE}
 #| code-fold: true
 # 2015 #
 
@@ -1847,11 +1943,7 @@ grafico_congreso3 <- grid.arrange(congreso_2015_g, congreso_2015_tg, ncol = 2,
   ))
 ```
 
-
----
-
-
-```{r}
+```{r, include=FALSE}
 #| code-fold: true
 
 # 2016 #
@@ -1919,11 +2011,7 @@ grafico_congreso4 <- grid.arrange(congreso_2016_g, congreso_2016_tg, ncol = 2,
   
 ```
 
-
----
-
-
-```{r}
+```{r, include=FALSE}
 #| code-fold: true
 # "2019 (abril)"  #
 
@@ -1989,11 +2077,7 @@ grafico_congreso5 <- grid.arrange(congreso_2019a_g, congreso_2019a_tg, ncol = 2,
              top = textGrob("2019 abril", gp = gpar(fontsize = 12, fontface = "bold")  ))
 ```
 
-
----
-
-
-```{r}
+```{r, include=FALSE}
 #| code-fold: true
 
 # "2019 (noviembre)"  #
@@ -2059,19 +2143,25 @@ grafico_congreso6 <- grid.arrange(congreso_2019n_g, congreso_2019n_tg, ncol = 2,
              top = textGrob("2019 noviembre", gp = gpar(fontsize = 12, fontface = "bold") ))
 ```
 
-
----
-
-
-```{r}
+```{r, echo=FALSE}
 #| code-fold: true
 grid.arrange(grafico_congreso1, grafico_congreso2, grafico_congreso3, grafico_congreso4, grafico_congreso5, grafico_congreso6, ncol = 2, nrow = 3)
 ```
 
-
 ---
 
-## Parte 6 
+### Bonus track: Mayoría absoluta
 
----
 
+La mayoría absoluta en el Congreso corresponde a la mitad de los escaños más uno, es decir: 176. 
+
+
+Esta mayoría absoluta facilita la formación del gobierno, ya que no hace falta negociar con más partidos para poder proponer un candidato a la investidura del Gobierno.
+
+En la diapositiva anterior podemos ver que, de las 6 elecciones que estamos analizando, **esta mayoría sólo se ha alcanzado en 2011**.
+
+------------------------------------------------------------------------
+
+## Parte 6
+
+------------------------------------------------------------------------
