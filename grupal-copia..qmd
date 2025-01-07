@@ -1804,7 +1804,7 @@ participacion_diff <- left_join(
   participacion_actual, survey_participacion_month, by = "year_month"
 ) |> 
   mutate(
-    participacion_diff = participacion_rate_actual - (turnout_mean / 100)
+    participacion_diff = participacion_rate_actual - (turnout_mean)
   )
 
 ggplot(participacion_diff, aes(x = year_month, y = participacion_diff)) +
