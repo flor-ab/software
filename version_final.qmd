@@ -38,7 +38,6 @@ library(broom) # Para transformar los archivos shapefiles
 library(gridExtra)
 library(grid)
 library(gganimate)
-library(quarto)
 ```
 
 ---
