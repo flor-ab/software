@@ -468,13 +468,13 @@ grid.arrange(grafico_pais_08, grafico_pais_15 , grafico_pais_19, ncol = 3, nrow 
 
 ------------------------------------------------------------------------
 
-## [Votos a candidatura en los municipios grandes]{.hl-green}
+## [**Votos a candidatura en los municipios grandes**]{.hl-green}
 
 -   Se filtran los datos según el censo de los municipios
 
 -   Se escogen los partidos más votados por municipio en cada elección
 
--   Se contabiliza en cuántos municipios gana cada partido
+-   Se calcula en cuántos municipios gana cada partido
 
 ```{r}
 #| code-fold: true
@@ -523,8 +523,7 @@ plot_p1 <- ggplot(datos_p1, aes(fill = siglas, values = n)) +
 
 ------------------------------------------------------------------------
 
-```{r}
-#| code-fold: true
+```{r, echo=FALSE}
 
 plot_p1 
 
@@ -534,7 +533,8 @@ plot_p1
 
 ### ¿Qué partido fue el segundo cuando el primero fue el PSOE? ¿Y cuando el primero fue el PP?
 
-En la mayoría de municipios grandes gana el PP o el PSOE, ¿son siemore los partidos más populares?
+
+En la mayoría de municipios grandes gana el PP o el PSOE, ¿son siempre los partidos más populares?
 
 ```{r}
 #| code-fold: true
@@ -670,8 +670,7 @@ plot_p2_b <- datos_p2_b |>
 
 ------------------------------------------------------------------------
 
-```{r}
-#| code-fold: true
+```{r, echo=FALSE}
 
 grid.arrange(plot_p2_a, plot_p2_b, ncol = 2)
 ```
