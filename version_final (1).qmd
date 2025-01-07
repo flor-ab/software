@@ -677,7 +677,7 @@ grid.arrange(plot_p2_a, plot_p2_b, ncol = 2)
 
 ------------------------------------------------------------------------
 
-## [**Evolución del Porcentaje de Voto en Relación al Censo por Comunidad Autónoma**] {hl.green}
+## Parte 3
 
 ```{r}
 #| code-fold: true
@@ -758,8 +758,7 @@ ggplot(tabla_pg4_censoxvotos) +
 
 ------------------------------------------------------------------------
 
-## [**Evolución del Porcentaje de Voto en Relación al Censo por Comunidad Autónoma**] {hl.green}
-
+## Parte 3: [**<Evolución del Porcentaje de Voto en Relación al Censo por Comunidad Autónoma>**] {hl.green}
 
 ```{r}
 #| code-fold: true
@@ -945,7 +944,7 @@ grid.arrange(grafica_menos65, grafica_menos71, grafica_menos73, grafica_mas73, n
 
 ------------------------------------------------------------------------
 
-## [**¿Es cierto que determinados partidos ganan en las zonas rurales?**] {hl.green}
+## Parte 3: [**<¿Es cierto que determinados partidos ganan en las zonas rurales?>**] {hl.green}
 
 ```{r}
 #| code-fold: true
@@ -1007,6 +1006,7 @@ tabla_partidos_rurales <- datos_rurales |>
 tabla_partidos_rurales
 
 ```
+------------------------------------------------------------------------
 
 ```{r}
 tabla_partidos_rurales
@@ -1040,9 +1040,9 @@ datos_rurales |>
 
 ------------------------------------------------------------------------
 
-## [**Resultados de las encuestas**]{.hl-green}
+## Parte 4
 
-¿Cómo calibrar el error de las encuestas?
+¿Cómo calibrar el error de las encuestas (recordemos que las encuestas son de intención de voto a nivel nacional)?
 
 Podemos ver que los resultados de las encuestas se suelen desviar entre cero con algo y 2 puntos porcentuales
 
@@ -1125,10 +1125,6 @@ grafico_comparacion_partido
 #| code-fold: true
 
 # Propuesta 3: lollipop por años con el promedio
-datos_partido_ganador <- 
-  datos_partido |> 
-  group_by(eleccion) |> 
-  slice_max(votos_partido)
 
 comparacion_filtro3 <- 
   comparacion |> 
@@ -1149,7 +1145,7 @@ ggplot(comparacion_filtro3, aes(x = eleccion, y = promedio_error)) +
     axis.text.x = element_text(angle = 90)
   ) +
   xlab("") +
-  ylab("Desviación de los votos reales (porcentual)") +
+  ylab("Desviación porc. de los votos reales") +
   coord_flip()
 
 
@@ -1157,7 +1153,8 @@ ggplot(comparacion_filtro3, aes(x = eleccion, y = promedio_error)) +
 
 ------------------------------------------------------------------------
 
-## [**Precisión de la participación estimada**]{.hl-green}
+## Parte 4
+
 ¿La intención de voto reportada en las encuestas muestra tendencias consistentes con las tasas de participación reales en todas las elecciones?
 
 ```{r}
@@ -1193,10 +1190,8 @@ ggplot(participacion_actual, aes(x = year_month, y = participacion_rate_actual))
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1), 
-    legend.position = "none",
-    plot.title = element_text(face = "bold",
-                              hjust = 0.5,
-                              margin = margin(b = 10)))
+    legend.position = "none"
+  )
 ```
 
 ------------------------------------------------------------------------
@@ -1228,10 +1223,7 @@ ggplot(survey_participacion_month, aes(x = year_month, y = turnout_mean)) +
     breaks = survey_participacion_month$year_month) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1) ,
-    plot.title = element_text(face = "bold",
-                              hjust = 0.5,
-                              margin = margin(b = 10))
+    axis.text.x = element_text(angle = 45, hjust = 1) 
   )
 
 
@@ -1261,10 +1253,7 @@ ggplot(participacion_diff, aes(x = year_month, y = participacion_diff)) +
   ) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    plot.title = element_text(face = "bold",
-                              hjust = 0.5,
-                              margin = margin(b = 10))
+    axis.text.x = element_text(angle = 45, hjust = 1) 
   )
 ```
 
@@ -2073,20 +2062,16 @@ En la diapositiva anterior podemos ver que, de las 6 elecciones que estamos anal
 
 ------------------------------------------------------------------------
 
-## Conclusiones 
-
 ## Conclusiones
 
-- :chart_with_downwards_trend: **Participación Electoral**:  
-  En torno a **2015**, la participación disminuyó notablemente, pero se _**recuperó hacia 2017-2018**_, mostrando fluctuaciones importantes.  
+- **Participación Electoral**: En torno a **2015**, la participación disminuyó, pero se _**recuperó hacia 2017-2018**_.  
 
-- :map: **Diferencias Regionales**:  
-  Algunas comunidades destacan con una participación cercana al **80%**, mientras que otras alcanzan mínimos del **50%**, evidenciando _**grandes variaciones**_.  
+- **Diferencias Regionales**: Algunas comunidades se mantienen cerca del **80%**, mientras que otras caen al **50%** en ciertos años.  
 
-- :arrows_counterclockwise: **Cambio Político**:  
-  Desde **2008**, el _**bipartidismo**_ ha dado paso a una mayor fragmentación con la aparición de **Podemos**, **Vox**, y otros partidos. Esto dificulta conseguir _**mayorías absolutas**_, forzando a los partidos a buscar **coaliciones**.  
+- **Cambio Político**: Desde **2008**, el _**bipartidismo**_ ha dado paso a **nuevos partidos** como _**Podemos**_ y _**Vox**_, complicando las mayorías absolutas y forzando **coaliciones**.  
 
-- :cityscape: **Municipios Grandes**:  
-  Los _**partidos tradicionales**_ siguen siendo los más populares, pero desde **2015**, los _**nuevos partidos**_ han ganado _**progresivamente apoyo**_, especialmente en áreas urbanas.  
+- **Municipios Grandes**: Los _**partidos tradicionales**_ siguen liderando, pero desde **2015**, los _**nuevos partidos**_ ganan apoyo.  
+
+
 
 ------------------------------------------------------------------------
