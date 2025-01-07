@@ -896,6 +896,8 @@ grid.arrange(grafica_menos65, grafica_menos71, grafica_menos73, grafica_mas73, n
 ## Parte 3: ¿Es cierto que determinados partidos ganan en las zonas rurales?
 
 ```{r}
+#| code-fold: true
+
 tabla_maestra <- tabla_maestra |> 
   mutate(zona = case_when(
     censo < 10000 ~ "rural",  
@@ -942,6 +944,7 @@ datos_rurales |>
 ## Se observa como el PP es el partido dominante en las zonas rurales
 ```
 ```{r}
+#| code-fold: true
 # Crear la tabla con el número de municipios ganados por cada partido
 tabla_partidos_rurales <- datos_rurales |> 
   group_by(siglas) |> 
@@ -954,6 +957,8 @@ tabla_partidos_rurales
 
 
 ```{r}
+#| code-fold: true
+
 # Partidos ganadores en zonas rurales por año
 datos_rurales |> 
   ggplot(aes(x = reorder(siglas, -n), y = n, fill = siglas)) +  
