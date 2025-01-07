@@ -21,6 +21,8 @@ execute:
   echo: true
 ---
 
+## [**Análisis de los datos electorales**]{.hl-green}
+
 ### Paquetes necesarios
 
 ```{r}
@@ -44,8 +46,15 @@ library(gganimate)
 
 ### Datos empleados
 
+-   `election_data`: archivo con las elecciones al congreso
+-   `cod_mun`: archivo con los códigos y nombres de cada municipio
+-   `abbrev`: siglas de cada partido
+-   `surveys`: encuestas electorales desde 1982.
+-   `escannos_provincia_anno`: número de  escaños por provincia y año
+-   `shapefile_provincias`: mapa de cada provincia
+
 ```{r}
-#| code-fold: true
+#| include: false
 shapefile_provincias <- st_read("./data/archivomapa/Provincias_ETRS89_30N.shp")
 election_data <- read_csv(file = "./data/datos_elecciones_brutos.csv")
 cod_mun <- read_csv(file = "./data/cod_mun.csv")
@@ -56,22 +65,21 @@ escannos_provincia_anno <- read_csv("data/escannos_provincia_anno.csv")
 
 ---
 
-# Parte 1: Depuración de datos {.panel-tabset}
+## Depuración de datos {.panel-tabset}
 
-Debes trabajar únicamente en el **período de tiempo que incluye las elecciones desde 2008 hasta las últimas elecciones de 2019**
+Datos únicamente del **período de tiempo que incluye las elecciones desde 2008 hasta las últimas elecciones de 2019.**
 
 Solo nos interesarán los siguientes partidos:
-- PARTIDO SOCIALISTA OBRERO ESPAÑOL
-- PARTIDO POPULAR
-- CIUDADANOS
-- PARTIDO NACIONALISTA VASCO
-- BLOQUE NACIONALISTA GALLEGO
-- UNIDAS PODEMOS - IU (Unidas Podemos, Unidos Podemos, Podemos, IU, Podem, y Ezker Batua).
-- ESQUERRA REPUBLICANA DE CATALUNYA
-- EH - BILDU (ahora son una coalición de partidos formada por lo que antes era Sortu, Eusko Alkartasuna, Aralar, Alternatiba).
-- VOX
+    -   PARTIDO SOCIALISTA OBRERO ESPAÑOL
+    -   PARTIDO POPULAR
+    -   CIUDADANOS
+    -   PARTIDO NACIONALISTA VASCO
+    -   BLOQUE NACIONALISTA GALLEGO
+    -   UNIDAS PODEMOS - IU
+    -   ESQUERRA REPUBLICANA DE CATALUNYA
+    -   EH - BILDU 
+    -   VOX
 
-Todo lo que no esté en alguno de los anteriores partidos debe ser correctamente reagrupado (y resumido) en `OTROS`
 
 ---
 
@@ -81,7 +89,6 @@ Todo lo que no esté en alguno de los anteriores partidos debe ser correctamente
 ```{r}
 #| code-fold: true
 
-#Convertir a tidy data
 eleccion_tidy <- 
   election_data |> 
   pivot_longer(cols = c(16:471), 
@@ -89,25 +96,26 @@ eleccion_tidy <-
                values_to = "votos", 
                values_drop_na = TRUE)
 
-eleccion_tidy |> 
-  distinct(codigo_distrito_electoral) #Sólo está el 0
-eleccion_tidy |> 
-  distinct(vuelta) #Sólo vuelta 1 
-eleccion_tidy |> 
-  distinct(tipo_eleccion) #Sólo tipo 02 --> nacionales
-eleccion_tidy |> 
-  distinct(anno, mes) #Hubo 6 elecciones : 2008,2011,2015,2016,2019 (abril) y 2019 (noviembre)
-
 ```
 
+```{r}
+#| code-fold: true
+
+tabla <- eleccion_tidy |> 
+  distinct(anno, mes, tipo_eleccion, vuelta, codigo_distrito_electoral)
+
+tabla
+
+```
+Datos de 6 elecciones nacionales: 2008,2011,2015,2016,2019 (abril) y 2019 (noviembre).
 
 ---
 
 
-## Depuración nombres de partidos 
+### Depuración nombres de partidos 
 
 ```{r} 
-#Depuración nombres de partidos
+#| code-fold: true
 nombres_partidos <- c("PARTIDO SOCIALISTA OBRERO ESPAÑOL","PARTIDO POPULAR", "CIUDADANOS", "PARTIDO NACIONALISTA VASCO", "BLOQUE NACIONALISTA GALLEGO", "UNIDAS PODEMOS - IU", "ESQUERRA REPUBLICANA DE CATALUNYA",  "EH - BILDU", "VOX")
 
 cambia_nombres <- function(partido, nombres) {
@@ -221,7 +229,9 @@ surveys_tidy <-
 ---
 
 
-## Resumen de información
+### Creación de tabla maestra 
+
+Tabla maestra que contiene nombres de municipios, sus códigos y las siglas de cada partido.
 
 ```{r}
 #| code-fold: true
@@ -339,8 +349,6 @@ grafico_resultados_elecciones
 ---
 
 
-## Mapa
-
 ```{r, message=FALSE, warning=FALSE}
 #| code-fold: true
 
@@ -359,7 +367,10 @@ mas_votado_prov <-
             "2019 (abril)",
             anno == 2019 & mes == "11" ~ 
               "2019 (noviembre)")) |> 
-  ungroup() |> 
+  ungroup()
+
+#Mapa 2015
+mas_votado_prov_15 <- mas_votado_prov |> 
   filter(eleccion == "2015") |> 
   distinct(eleccion, codigo_provincia, siglas, votos_partido) |> 
   group_by(eleccion, codigo_provincia) |> 
@@ -367,38 +378,100 @@ mas_votado_prov <-
   slice_max(votos_partido) |> 
   mutate(porc = votos_partido / votos_totales)
 
-mas_votado_prov <-
-  mas_votado_prov |> 
+mas_votado_prov_15 <-
+  mas_votado_prov_15 |> 
   mutate(siglas = factor(siglas, levels = c("PP","PSOE","PNV","OTRO","ERC","BNG","PODEMOS-IU","C's","EH-BILDU","VOX"), 
                          ordered = TRUE))
 
-provincias_sf <- 
+provincias_sf_15 <- 
   provincias_sf %>%
-  left_join(mas_votado_prov, by = c("Codigo" = "codigo_provincia"))
+  left_join(mas_votado_prov_15, by = c("Codigo" = "codigo_provincia"))
 
-head(provincias_sf)
-
-grafico_pais <-
-  ggplot(data = provincias_sf) +
+grafico_pais_15 <-
+  ggplot(data = provincias_sf_15) +
   geom_sf(aes(fill = siglas, alpha = porc), color = "black") +
-  scale_fill_manual(values = colores_partidos) +  # Escala de colores
+  scale_fill_manual(values = colores_partidos) + 
   theme_minimal() +
-  labs(title = "Mapa de España con datos por provincia",
-       fill = "Leyenda")
+  labs(title = "2015",
+       fill = "") +
+  guides(alpha = "none") +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10)))
+
+#Mapa 2008
+mas_votado_prov_08 <- mas_votado_prov |> 
+  filter(eleccion == "2008") |> 
+  distinct(eleccion, codigo_provincia, siglas, votos_partido) |> 
+  group_by(eleccion, codigo_provincia) |> 
+  mutate(votos_totales = sum(votos_partido)) |> 
+  slice_max(votos_partido) |> 
+  mutate(porc = votos_partido / votos_totales)
+
+mas_votado_prov_08 <-
+  mas_votado_prov_08 |> 
+  mutate(siglas = factor(siglas, levels = c("PP","PSOE","PNV","OTRO","ERC","BNG","PODEMOS-IU","C's","EH-BILDU","VOX"), 
+                         ordered = TRUE))
+
+provincias_sf_08 <- 
+  provincias_sf %>%
+  left_join(mas_votado_prov_08, by = c("Codigo" = "codigo_provincia"))
+
+grafico_pais_08 <-
+  ggplot(data = provincias_sf_08) +
+  geom_sf(aes(fill = siglas, alpha = porc), color = "black") +
+  scale_fill_manual(values = colores_partidos) +  
+  theme_minimal() +
+  labs(title = "2008",
+       fill = "") +
+  guides(alpha = "none") +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10)))
+
+#Mapa 2019(nov)
+mas_votado_prov_19 <- mas_votado_prov |> 
+  filter(eleccion == "2019 (noviembre)") |> 
+  distinct(eleccion, codigo_provincia, siglas, votos_partido) |> 
+  group_by(eleccion, codigo_provincia) |> 
+  mutate(votos_totales = sum(votos_partido)) |> 
+  slice_max(votos_partido) |> 
+  mutate(porc = votos_partido / votos_totales)
+
+mas_votado_prov_19 <-
+  mas_votado_prov_19 |> 
+  mutate(siglas = factor(siglas, levels = c("PP","PSOE","PNV","OTRO","ERC","BNG","PODEMOS-IU","C's","EH-BILDU","VOX"), 
+                         ordered = TRUE))
+
+provincias_sf_19 <- 
+  provincias_sf %>%
+  left_join(mas_votado_prov_19, by = c("Codigo" = "codigo_provincia"))
+
+grafico_pais_19 <-
+  ggplot(data = provincias_sf_19) +
+  geom_sf(aes(fill = siglas, alpha = porc), color = "black") +
+  scale_fill_manual(values = colores_partidos) + 
+  theme_minimal() +
+  labs(title = "Noviembre 2019",
+       fill = "") +
+  guides(alpha = "none") +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10)))
+
+grid.arrange(grafico_pais_08, grafico_pais_15 , grafico_pais_19, ncol = 3, nrow = 1)
 
 ```
 
 
 ---
 
-
-```{r}
-grafico_pais
-
-```
-
-
----
 
 
 ## Votos a candidatura en los municipios grandes (\>100.000 habitantes)
