@@ -317,7 +317,7 @@ datos_partido <-
 colores_partidos <- c("OTRO" = "grey45", "PP" = "#17589d", "PNV" = "#308444", 
                       "PODEMOS-IU" = "#6b1f5f", "VOX" = "#5ac035", 
                       "PSOE" = "#c20e1a", "ERC" = "#fcc34e", "BNG" = "#76b3dd",
-                      "C's" = "#fb5000")
+                      "C's" = "#fb5000", "EH-BILDU"= "#1af7db")
 
 #Resultados generales
 grafico_resultados_elecciones <- 
