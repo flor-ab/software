@@ -677,7 +677,7 @@ grid.arrange(plot_p2_a, plot_p2_b, ncol = 2)
 
 ------------------------------------------------------------------------
 
-## Parte 3
+## [**Evolución del Porcentaje de Voto en Relación al Censo por Comunidad Autónoma**] {hl.green}
 
 ```{r}
 #| code-fold: true
@@ -758,8 +758,7 @@ ggplot(tabla_pg4_censoxvotos) +
 
 ------------------------------------------------------------------------
 
-## Parte 3: 
-[**<Evolución del Porcentaje de Voto en Relación al Censo por Comunidad Autónoma>**] {hl.green}
+## [**Evolución del Porcentaje de Voto en Relación al Censo por Comunidad Autónoma**] {hl.green}
 
 
 ```{r}
@@ -946,8 +945,7 @@ grid.arrange(grafica_menos65, grafica_menos71, grafica_menos73, grafica_mas73, n
 
 ------------------------------------------------------------------------
 
-## Parte 3: 
-[**<¿Es cierto que determinados partidos ganan en las zonas rurales?>**] {hl.green}
+## [**¿Es cierto que determinados partidos ganan en las zonas rurales?**] {hl.green}
 
 ```{r}
 #| code-fold: true
@@ -1042,9 +1040,9 @@ datos_rurales |>
 
 ------------------------------------------------------------------------
 
-## Parte 4
+## [**Resultados de las encuestas**]{.hl-green}
 
-¿Cómo calibrar el error de las encuestas (recordemos que las encuestas son de intención de voto a nivel nacional)?
+¿Cómo calibrar el error de las encuestas?
 
 Podemos ver que los resultados de las encuestas se suelen desviar entre cero con algo y 2 puntos porcentuales
 
@@ -1127,6 +1125,10 @@ grafico_comparacion_partido
 #| code-fold: true
 
 # Propuesta 3: lollipop por años con el promedio
+datos_partido_ganador <- 
+  datos_partido |> 
+  group_by(eleccion) |> 
+  slice_max(votos_partido)
 
 comparacion_filtro3 <- 
   comparacion |> 
@@ -1147,7 +1149,7 @@ ggplot(comparacion_filtro3, aes(x = eleccion, y = promedio_error)) +
     axis.text.x = element_text(angle = 90)
   ) +
   xlab("") +
-  ylab("Desviación porc. de los votos reales") +
+  ylab("Desviación de los votos reales (porcentual)") +
   coord_flip()
 
 
@@ -1155,8 +1157,7 @@ ggplot(comparacion_filtro3, aes(x = eleccion, y = promedio_error)) +
 
 ------------------------------------------------------------------------
 
-## Parte 4
-
+## [**Precisión de la participación estimada**]{.hl-green}
 ¿La intención de voto reportada en las encuestas muestra tendencias consistentes con las tasas de participación reales en todas las elecciones?
 
 ```{r}
@@ -1192,8 +1193,10 @@ ggplot(participacion_actual, aes(x = year_month, y = participacion_rate_actual))
   theme_minimal() +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1), 
-    legend.position = "none"
-  )
+    legend.position = "none",
+    plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10)))
 ```
 
 ------------------------------------------------------------------------
@@ -1225,7 +1228,10 @@ ggplot(survey_participacion_month, aes(x = year_month, y = turnout_mean)) +
     breaks = survey_participacion_month$year_month) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1) 
+    axis.text.x = element_text(angle = 45, hjust = 1) ,
+    plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10))
   )
 
 
@@ -1255,7 +1261,10 @@ ggplot(participacion_diff, aes(x = year_month, y = participacion_diff)) +
   ) +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1) 
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10))
   )
 ```
 
