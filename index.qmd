@@ -1283,7 +1283,6 @@ El Congreso de los Diputados en España se encarga de debatir y redactar las ley
 ### Reparto de escaños por circunscripción:
 
 
-
 -   Ceuta y Melilla $\rightarrow$ 1 escaño cada una
 
 -   El resto de circunscripciones electorales $\rightarrow$ como mínimo 2 escaños
