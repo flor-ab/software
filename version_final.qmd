@@ -46,7 +46,6 @@ library(gganimate)
 
 ```{r}
 #| code-fold: true
-#| eval: false
 shapefile_provincias <- st_read("./data/archivomapa/Provincias_ETRS89_30N.shp")
 election_data <- read_csv(file = "./data/datos_elecciones_brutos.csv")
 cod_mun <- read_csv(file = "./data/cod_mun.csv")
