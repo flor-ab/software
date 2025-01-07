@@ -70,6 +70,7 @@ escannos_provincia_anno <- read_csv("data/escannos_provincia_anno.csv")
 Datos únicamente del **período de tiempo que incluye las elecciones desde 2008 hasta las últimas elecciones de 2019.**
 
 Solo nos interesarán los siguientes partidos:
+
     -   PARTIDO SOCIALISTA OBRERO ESPAÑOL
     -   PARTIDO POPULAR
     -   CIUDADANOS
@@ -84,7 +85,7 @@ Solo nos interesarán los siguientes partidos:
 ---
 
 
-## Convertir a tidy data 
+### Convertir a tidy data 
 
 ```{r}
 #| code-fold: true
@@ -113,6 +114,8 @@ Datos de 6 elecciones nacionales: 2008,2011,2015,2016,2019 (abril) y 2019 (novie
 
 
 ### Depuración nombres de partidos 
+
+Creación de una función para depurar los nombres de los partidos y reagrupar los demás partidos en la categoría "Otros". 
 
 ```{r} 
 #| code-fold: true
@@ -161,10 +164,6 @@ cambia_nombres <- function(partido, nombres) {
   
   return("OTRO")
 }
-
-cambia_nombres("PARTIDO MINERO POPULAR", nombres_partidos) #ejemplo
-cambia_nombres("PARTIT POPUPLR-PARTIDO POPULAR", nombres_partidos) #ejemplo
-cambia_nombres("CIUDADANOS-PARTIDO DE LA CIUDADANÍA", nombres_partidos) #ver que antes no captaba 
 
 #Aplicar función al dataframe
 eleccion_tidy_filt <- 
@@ -340,7 +339,10 @@ grafico_resultados_elecciones <-
     y = "Porcentaje de votos",
     fill = "Partido"
   ) +
-  theme_minimal()
+  theme_minimal() +
+    theme( plot.title = element_text(face = "bold",
+                              hjust = 0.5,
+                              margin = margin(b = 10)))
 
 grafico_resultados_elecciones
 ```
