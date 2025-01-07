@@ -1112,86 +1112,6 @@ grafico_comparacion_partido <-
   guides(fill = "none")
 grafico_comparacion_partido
 ```
-
-------------------------------------------------------------------------
-
-(Para eliminar)
-
-```{r}
-#| code-fold: true
-
-# Propuesta 1 : barras
-
-error_positivo_negativo <-
-  comparacion |> 
-  group_by(pollster) |> 
-  count(error_positivo_negativo) |> 
-  mutate(totales = sum(n),
-         porc = round(n / totales,1))
-
-orden_pollsters <-
-  error_positivo_negativo |> 
-  filter(error_positivo_negativo == "Negativo") |> 
-  arrange(-porc) |> 
-  select(pollster) |> 
-  pull()
-
-error_positivo_negativo <-
-  error_positivo_negativo |> 
-  mutate(pollster = factor(pollster, levels = orden_pollsters, ordered= TRUE))
-
-ggplot(error_positivo_negativo) + 
-  geom_col(aes( y = pollster, x = porc, fill = error_positivo_negativo)) +
-    theme(axis.text.y = element_text(size = 7))
-```
-
-------------------------------------------------------------------------
-
-Para eliminar
-
-```{r}
-#| code-fold: true
-
-# Propuesta 2 : lollipop
-
-# Partido que ganó las elecciones
-datos_partido_ganador <- 
-  datos_partido |> 
-  group_by(eleccion) |> 
-  slice_max(votos_partido)
-
-comparacion_filtro <- 
-  comparacion |> 
-  inner_join(y = datos_partido_ganador, by = c("eleccion" = "eleccion", "siglas" = "siglas")) |> 
-  filter(eleccion == "2019 (noviembre)") |> 
-  select(eleccion, pollster, error_real)
-
-orden_pollsters2 <-
-  comparacion_filtro |> 
-  arrange(- error_real) |> 
-  select(pollster) |> 
-  pull()
-
-comparacion_filtro <-
-  comparacion_filtro |> 
-  mutate(pollster = factor(pollster, levels = orden_pollsters2, ordered = TRUE))
-  
-ggplot(comparacion_filtro, aes(x = pollster, y = error_real)) +
-  geom_segment( aes(x = pollster, xend = pollster, y=0, yend = error_real), color="grey", size = 1.2) +
-  geom_point( color="orange", size = 4) +
-  facet_wrap(~ eleccion) +
-  theme_light() +
-  theme(
-    panel.grid.major.x = element_blank(),
-    panel.border = element_blank(),
-    axis.ticks.x = element_blank(),
-    axis.text.x = element_text(angle = 90)
-  ) +
-  xlab("") +
-  ylab("Desviación porc. de los votos reales") +
-  coord_flip()
-```
-
 ------------------------------------------------------------------------
 
 ```{r}
@@ -1221,32 +1141,6 @@ ggplot(comparacion_filtro3, aes(x = eleccion, y = promedio_error)) +
   ylab("Desviación porc. de los votos reales") +
   coord_flip()
 
-
-```
-
-------------------------------------------------------------------------
-
-Parece que hay algunas empresas encuestadoras que se desvían más que otras, ver cómo poner este gráfico por años
-
-(Para eliminar)
-
-```{r}
-#| code-fold: true
-
-# Propuesta 4: cajas y bigotes por encuestadora
-grafico_comparacion_pollster <-
-  comparacion |> 
-  filter(eleccion == "2015") |> 
-  ggplot( aes(x = error_relativo_cand, y = pollster, fill = pollster)) +
-  geom_boxplot() +
-  labs(
-    x = "Error absoluto relativo",
-    y = "Encuestadora",
-    fill = "Encuestadora"
-  ) +
-  guides(fill = "none") +
-  facet_wrap(~eleccion) 
-grafico_comparacion_pollster
 
 ```
 
@@ -1304,7 +1198,7 @@ survey_participacion_month <- surveys_tidy |>
   ) |> 
   group_by(anno, mes) |> 
   summarise(
-    turnout_mean = mean(turnout, na.rm = TRUE), 
+    turnout_mean = mean(turnout, na.rm = TRUE)/100, 
     .groups = "drop"
   ) |> 
   mutate(year_month = as.Date(paste(anno, mes, "1", sep = "-"), format = "%Y-%m-%d"))
@@ -1315,7 +1209,7 @@ ggplot(survey_participacion_month, aes(x = year_month, y = turnout_mean)) +
   labs(
     title = "Participación electoral promedio por año y mes",
     x = "Año-Mes",
-    y = "Participación media (%)"
+    y = "Participación media"
   ) +
   scale_x_date(
     date_labels = "%Y-%m",
